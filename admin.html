@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S2T 계약재배 및 생산관리 시스템</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- 카카오/다음 우편번호 주소 검색 API (HTTPS 명시) -->
+  <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+  <!-- 인증 및 권한 세션 가드 -->
+  <script src="auth.js"></script>
+  <script>
+    // 관리자 세션 가드 (미인가 접속 시 login.html로 이동)
+    const adminSession = s2tAuth.requireRole("admin");
+  </script>
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-light: #4caf50;
+      --primary-dark: #1b5e20;
+      --primary-bg: #e8f5e9;
+      --accent-melon: #00897b;
+      --accent-melon-bg: #e0f2f1;
+      --accent-water: #e53935;
+      --accent-water-bg: #ffebee;
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --border-dark: #d1d5db;
+      --warning: #f59e0b;
+      --warning-bg: #fef3c7;
+      --info: #2563eb;
+      --info-bg: #dbeafe;
+      --danger: #dc2626;
+      --danger-bg: #fee2e2;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 상단 네비게이션 헤더 */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--primary), #1b5e20);
+      color: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 2px 6px rgba(46, 125, 50, 0.3);
+    }
+
+    .brand-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sync-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: #f3f4f6;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .sync-status-badge.connected {
+      background: var(--primary-bg);
+      color: var(--primary);
+      border: 1px solid #c8e6c9;
+    }
+
+    .sync-status-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #9ca3af;
+    }
+
+    .sync-status-badge.connected .dot {
+      background: var(--primary);
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background: #ffffff;
+      border-color: var(--border-dark);
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+
+    /* 메인 레이아웃 */
+    main {
+      flex: 1;
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* 상단 KPI 대시보드 요약 카드 */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    #kpiRecentSettlementsList::-webkit-scrollbar {
+      width: 4px;
+    }
+    #kpiRecentSettlementsList::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+    #kpiRecentSettlementsList::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 4px;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
+    .kpi-info h3 {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .kpi-info .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .kpi-info .kpi-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .kpi-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .kpi-icon.green { background: var(--primary-bg); color: var(--primary); }
+    .kpi-icon.blue { background: var(--info-bg); color: var(--info); }
+    .kpi-icon.amber { background: var(--warning-bg); color: var(--warning); }
+    .kpi-icon.purple { background: #f3e8ff; color: #7e22ce; }
+
+    /* 탭 컨트롤러 */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      background: #e5e7eb;
+      padding: 6px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      min-width: 140px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #4b5563;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* 탭 본문 영역 */
+    .tab-panel {
+      display: none;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 카드 컨테이너 */
+    .content-card {
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .table-header-bar {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filters-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrap {
+      position: relative;
+    }
+
+    .search-input-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 0.85rem;
+    }
+
+    .search-input-wrap input {
+      padding: 8px 12px 8px 34px;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      outline: none;
+      width: 220px;
+      transition: border 0.2s;
+    }
+
+    .search-input-wrap input:focus {
+      border-color: var(--primary);
+    }
+
+    .select-filter {
+      padding: 8px 12px;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      background: #ffffff;
+      outline: none;
+    }
+
+    /* 데이터 테이블 */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    thead th {
+      background-color: #f9fafb;
+      color: #4b5563;
+      font-weight: 600;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background-color: #f9fafb;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* 뱃지 스타일 */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* 품목 뱃지 */
+    .badge-melon { background: var(--accent-melon-bg); color: var(--accent-melon); border: 1px solid #b2dfdb; }
+    .badge-water { background: var(--accent-water-bg); color: var(--accent-water); border: 1px solid #ffcdd2; }
+
+    /* 계약상태 뱃지 */
+    .badge-complete { background: #dcfce7; color: #15803d; }
+    .badge-review { background: #fef9c3; color: #a16207; }
+
+    /* 생육단계 뱃지 */
+    .badge-stage-1 { background: #e0f2fe; color: #0369a1; } /* 활착기 */
+    .badge-stage-2 { background: #dbeafe; color: #1d4ed8; } /* 생장기 */
+    .badge-stage-3 { background: #f3e8ff; color: #6b21a8; } /* 착과·비대기 */
+    .badge-stage-4 { background: #ffedd5; color: #c2410c; font-weight: 700; border: 1px solid #fdba74; } /* 수확임박 */
+    .badge-stage-5 { background: #e2e8f0; color: #334155; } /* 수확완료 */
+
+    /* 품질 등급 */
+    .badge-grade-special { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; font-weight: 700; }
+    .badge-grade-high { background: #e0e7ff; color: #4338ca; }
+    .badge-grade-mid { background: #f1f5f9; color: #475569; }
+
+    /* D-Day 알림 뱃지 */
+    .d-day-tag {
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      display: inline-block;
+    }
+    .d-day-urgent {
+      background: #fee2e2;
+      color: #b91c1c;
+      animation: pulse 1.8s infinite;
+    }
+    .d-day-normal {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* 액션 버튼 그룹 */
+    .action-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.15s;
+    }
+
+    .btn-icon:hover {
+      background: #f3f4f6;
+      color: var(--text-main);
+    }
+
+    .btn-icon.delete:hover {
+      background: var(--danger-bg);
+      color: var(--danger);
+      border-color: #fca5a5;
+    }
+
+    /* 공통 모달 */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 16px;
+      backdrop-filter: blur(3px);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #ffffff;
+      border-radius: 14px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      animation: modalSlide 0.2s ease-out;
+    }
+
+    @keyframes modalSlide {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .modal-close:hover { color: var(--text-main); }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: #fafafa;
+      border-radius: 0 0 14px 14px;
+    }
+
+    /* 폼 요소 */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .form-group label .required {
+      color: var(--danger);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border-dark);
+      border-radius: 8px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .helper-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: #166534;
+      line-height: 1.4;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .helper-box i {
+      margin-top: 2px;
+      font-size: 0.95rem;
+    }
+
+    .quick-tag-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .quick-tag {
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: #f3f4f6;
+      border: 1px solid var(--border);
+      font-size: 0.76rem;
+      cursor: pointer;
+      color: #4b5563;
+      transition: all 0.15s;
+    }
+
+    .quick-tag:hover {
+      background: var(--primary-bg);
+      color: var(--primary);
+      border-color: #86efac;
+    }
+
+    /* 빈 데이터 안내 */
+    .empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: #d1d5db;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      font-size: 0.92rem;
+      margin-bottom: 16px;
+    }
+
+    /* 반응형 미디어 쿼리 */
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 16px;
+      }
+      main {
+        padding: 14px;
+      }
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      .search-input-wrap input {
+        width: 100%;
+      }
+      .table-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filters-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 상단 네비게이션 헤더 -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-seedling"></i>
+      </div>
+      <div class="brand-title">
+        <h1>S2T 계약재배 및 생산관리</h1>
+        <p>Seed-to-Table 물량 예측 & 품질·정산 통합 시스템</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div id="adminProfileContainer"></div>
+      <a href="user.html" target="_blank" class="btn btn-outline btn-sm" title="새 탭에서 농가 관리자 화면 열기">
+        <i class="fa-solid fa-wheat-awn" style="color: var(--primary);"></i> 농가 관리자
+      </a>
+      <button class="btn btn-outline btn-sm" onclick="openConfigModal()">
+        <i class="fa-solid fa-gear"></i> 시트 연동 설정
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 영역 -->
+  <main>
+
+    <!-- 상단 핵심 KPI 요약 카드 바 -->
+    <div class="kpi-grid">
+      <!-- 1. 총 계약 농가 카드 -->
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <h3 style="margin: 0;">총 계약 농가</h3>
+            <span id="kpiNewFarmBadge" style="font-size: 0.72rem; background: #e0f2fe; color: #0369a1; padding: 2px 7px; border-radius: 10px; font-weight: 700;">신규(1개월) 0</span>
+          </div>
+          <div class="kpi-value"><span id="kpiFarmCount">0</span> <small style="font-size: 0.85rem; font-weight: normal;">개소</small></div>
+          <div class="kpi-sub" id="kpiFarmSub">하우스 0동 / 0평</div>
+          <div class="kpi-sub" id="kpiFarmRegionSub" style="margin-top: 6px; font-size: 0.75rem; color: #374151; background: #f9fafb; padding: 4px 8px; border-radius: 6px; border: 1px solid #f3f4f6; line-height: 1.3;">
+            <i class="fa-solid fa-map-pin" style="color: var(--primary); font-size: 0.7rem; margin-right: 3px;"></i>지역별: -
+          </div>
+        </div>
+        <div class="kpi-icon green" style="margin-left: 10px; flex-shrink: 0;">
+          <i class="fa-solid fa-users"></i>
+        </div>
+      </div>
+
+      <!-- 2. 총 생산 예측 물량 카드 -->
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h3>총 생산 예측 물량</h3>
+          <div class="kpi-value" id="kpiYieldValue">0 <small style="font-size: 0.85rem; font-weight: normal;">kg</small></div>
+          <div class="kpi-sub" id="kpiYieldSub">하미과 0kg · 수박 0통</div>
+          <div class="kpi-sub" id="kpiYieldRegionSub" style="margin-top: 6px; font-size: 0.75rem; color: #1d4ed8; background: #eff6ff; padding: 4px 8px; border-radius: 6px; border: 1px solid #dbeafe; line-height: 1.3;">
+            <i class="fa-solid fa-chart-pie" style="font-size: 0.7rem; margin-right: 3px;"></i>지역별: -
+          </div>
+        </div>
+        <div class="kpi-icon blue" style="margin-left: 10px; flex-shrink: 0;">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+      </div>
+
+      <!-- 3. 수확 임박 농가 (D-7) 카드 -->
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h3>수확 임박 농가 (D-7)</h3>
+          <div class="kpi-value"><span id="kpiNearHarvestCount">0</span> <small style="font-size: 0.85rem; font-weight: normal;">농가</small></div>
+          <div class="kpi-sub" id="kpiNearHarvestSub">출하 일정 점검 대상</div>
+          <div id="kpiNearHarvestFarmsList" style="margin-top: 6px; font-size: 0.75rem; color: #b45309; background: #fef3c7; padding: 4px 8px; border-radius: 6px; border: 1px solid #fde68a; line-height: 1.4;">
+            현재 임박 농가 없음
+          </div>
+        </div>
+        <div class="kpi-icon amber" style="margin-left: 10px; flex-shrink: 0;">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+      </div>
+
+      <!-- 4. 누적 정산 금액 카드 -->
+      <div class="kpi-card">
+        <div class="kpi-info">
+          <h3>누적 정산 금액</h3>
+          <div class="kpi-value"><span id="kpiTotalSettlement">0</span> <small style="font-size: 0.85rem; font-weight: normal;">원</small></div>
+          <div class="kpi-sub" id="kpiSettlementSub">평균 달성률 0%</div>
+          <div style="margin-top: 6px; border-top: 1px dashed #e5e7eb; padding-top: 5px;">
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600; margin-bottom: 2px;">
+              <i class="fa-solid fa-list-ol" style="font-size: 0.68rem; margin-right: 2px;"></i>농가별 정산 (최근 3건/스크롤):
+            </div>
+            <div id="kpiRecentSettlementsList" style="max-height: 64px; overflow-y: auto; font-size: 0.74rem; color: #374151; display: flex; flex-direction: column; gap: 3px; padding-right: 4px;">
+              <span style="color: #9ca3af;">정산 내역 없음</span>
+            </div>
+          </div>
+        </div>
+        <div class="kpi-icon purple" style="margin-left: 10px; flex-shrink: 0;">
+          <i class="fa-solid fa-sack-dollar"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- 탭 네비게이션 버튼 -->
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('farms')">
+        <i class="fa-solid fa-address-book"></i> ① 농가등록 (기반정보)
+      </button>
+      <button class="tab-btn" onclick="switchTab('predictions')">
+        <i class="fa-solid fa-seedling"></i> ② 생산예측 (S2T 핵심)
+      </button>
+      <button class="tab-btn" onclick="switchTab('settlements')">
+        <i class="fa-solid fa-box-open"></i> ③ 정산 및 이슈 (유통/품질)
+      </button>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 탭 1: 농가등록 화면                                             -->
+    <!-- ============================================================== -->
+    <div id="tabFarms" class="tab-panel active">
+      <div class="content-card">
+        <div class="table-header-bar">
+          <div class="filters-group">
+            <div class="search-input-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="farmSearchInput" placeholder="농가명, 대표자, 지역 검색..." oninput="renderFarmsTable()">
+            </div>
+            <select id="farmCropFilter" class="select-filter" onchange="renderFarmsTable()">
+              <option value="">전체 품목</option>
+              <option value="하미과멜론">🍈 하미과멜론</option>
+              <option value="수박 고상재배">🍉 수박 고상재배</option>
+            </select>
+            <select id="farmStatusFilter" class="select-filter" onchange="renderFarmsTable()">
+              <option value="">전체 계약상태</option>
+              <option value="계약 완료">계약 완료</option>
+              <option value="검토 중">검토 중</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="openFarmModal()">
+            <i class="fa-solid fa-plus"></i> 신규 농가 등록
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>농가코드</th>
+                <th>농가명(대표자)</th>
+                <th>연락처</th>
+                <th>지역(주소)</th>
+                <th>재배 품목</th>
+                <th>하우스 동수 / 면적</th>
+                <th>계약 상태</th>
+                <th>등록일시</th>
+                <th style="text-align: right;">관리</th>
+              </tr>
+            </thead>
+            <tbody id="farmsTableBody">
+              <!-- JS 동적 렌더링 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 탭 2: 생산예측 화면 (S2T 핵심)                                   -->
+    <!-- ============================================================== -->
+    <div id="tabPredictions" class="tab-panel">
+      <div class="content-card">
+        <div class="table-header-bar">
+          <div class="filters-group">
+            <div class="search-input-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="predSearchInput" placeholder="계약ID, 농가명 검색..." oninput="renderPredictionsTable()">
+            </div>
+            <select id="predCropFilter" class="select-filter" onchange="renderPredictionsTable()">
+              <option value="">전체 품목</option>
+              <option value="하미과멜론">🍈 하미과멜론</option>
+              <option value="수박 고상재배">🍉 수박 고상재배</option>
+            </select>
+            <select id="predStageFilter" class="select-filter" onchange="renderPredictionsTable()">
+              <option value="">전체 생육단계</option>
+              <option value="활착기">활착기</option>
+              <option value="생장기">생장기</option>
+              <option value="착과·비대기">착과·비대기</option>
+              <option value="수확임박">수확임박</option>
+              <option value="수확완료">수확완료</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="openPredictionModal()">
+            <i class="fa-solid fa-plus"></i> 생산 예측 등록
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>계약ID</th>
+                <th>농가명</th>
+                <th>재배 품목</th>
+                <th>정식일</th>
+                <th>착과일(수정일)</th>
+                <th>예상 수확 기간</th>
+                <th>수확 D-Day</th>
+                <th>예상 출하 물량</th>
+                <th>현재 생육 단계</th>
+                <th style="text-align: right;">관리</th>
+              </tr>
+            </thead>
+            <tbody id="predictionsTableBody">
+              <!-- JS 동적 렌더링 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- 탭 3: 정산 및 이슈 관리 화면                                     -->
+    <!-- ============================================================== -->
+    <div id="tabSettlements" class="tab-panel">
+      <div class="content-card">
+        <div class="table-header-bar">
+          <div class="filters-group">
+            <div class="search-input-wrap">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="settleSearchInput" placeholder="농가명, 계약ID, 특이사항 검색..." oninput="renderSettlementsTable()">
+            </div>
+            <select id="settleGradeFilter" class="select-filter" onchange="renderSettlementsTable()">
+              <option value="">전체 등급</option>
+              <option value="특">특품</option>
+              <option value="상">상품</option>
+              <option value="중">중품</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="openSettlementModal()">
+            <i class="fa-solid fa-plus"></i> 정산 및 이슈 등록
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>정산ID</th>
+                <th>계약ID</th>
+                <th>농가명</th>
+                <th>품목</th>
+                <th>수확일</th>
+                <th>실제 출하 물량</th>
+                <th>품질 등급</th>
+                <th>책정 단가</th>
+                <th>예상 정산금액</th>
+                <th>현장 특이사항 및 이슈</th>
+                <th style="text-align: right;">관리</th>
+              </tr>
+            </thead>
+            <tbody id="settlementsTableBody">
+              <!-- JS 동적 렌더링 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- 모달 1: 농가 등록 / 수정 모달                                     -->
+  <!-- ============================================================== -->
+  <div id="farmModalBackdrop" class="modal-backdrop" onclick="if(event.target===this) closeFarmModal()">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="farmModalTitle">신규 농가 등록</h2>
+        <button class="modal-close" onclick="closeFarmModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="farmFormId">
+
+        <div class="form-group">
+          <label>농가명 (대표자) <span class="required">*</span></label>
+          <input type="text" id="farmFormName" class="form-control" placeholder="예: 김성주 (성주일등농원)">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>연락처 <span class="required">*</span></label>
+            <input type="text" id="farmFormPhone" class="form-control" placeholder="예: 010-1234-5678">
+          </div>
+          <div class="form-group">
+            <label>재배 품목 <span class="required">*</span></label>
+            <select id="farmFormCrop" class="form-control">
+              <option value="하미과멜론">🍈 하미과멜론</option>
+              <option value="수박 고상재배">🍉 수박 고상재배</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>지역 (기본 주소) <span class="required">*</span></label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="farmFormRegion" class="form-control" placeholder="주소를 직접 입력하시거나 우측 [주소 검색] 버튼을 누르세요" style="background: #ffffff; cursor: text;">
+            <button type="button" class="btn btn-outline" onclick="searchFarmAddress()" style="white-space: nowrap; padding: 0 14px; font-size: 0.85rem;">
+              <i class="fa-solid fa-magnifying-glass-location" style="color: var(--primary);"></i> 주소 검색
+            </button>
+          </div>
+          <input type="text" id="farmFormDetailAddress" class="form-control" placeholder="상세 주소 (예: 123-4번지, A동 하우스 단지 등)" style="margin-top: 6px;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 3px;">
+            <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i> [주소 검색]으로 시·군·동/리를 검색하거나, 직접 타이핑하여 자유롭게 수정·등록할 수 있습니다.
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>하우스 동수</label>
+            <input type="number" id="farmFormHouses" class="form-control" placeholder="예: 6" min="1">
+          </div>
+          <div class="form-group">
+            <label>재배 면적 (평)</label>
+            <input type="number" id="farmFormArea" class="form-control" placeholder="예: 1200" min="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>계약 상태</label>
+          <select id="farmFormStatus" class="form-control">
+            <option value="계약 완료">계약 완료</option>
+            <option value="검토 중">검토 중</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeFarmModal()">취소</button>
+        <button class="btn btn-primary" onclick="submitFarmForm()">농가 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 모달 2: 생산 예측 등록 / 수정 모달 (S2T 스마트 계산 탑재)           -->
+  <!-- ============================================================== -->
+  <div id="predModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="predModalTitle">생산 예측 등록 (S2T 핵심)</h2>
+        <button class="modal-close" onclick="closePredictionModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="predFormId">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>계약ID</label>
+            <input type="text" id="predFormContractId" class="form-control" placeholder="자동 생성 (예: CNT-2026-01)">
+          </div>
+          <div class="form-group">
+            <label>대상 농가 선택 <span class="required">*</span></label>
+            <select id="predFormFarmSelect" class="form-control" onchange="onFarmSelectChange()">
+              <option value="">농가를 선택하세요</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>재배 품목</label>
+            <select id="predFormCrop" class="form-control" onchange="recalculateHarvestDates()">
+              <option value="하미과멜론">🍈 하미과멜론</option>
+              <option value="수박 고상재배">🍉 수박 고상재배</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>현재 생육 단계</label>
+            <select id="predFormStage" class="form-control">
+              <option value="활착기">활착기 (정식 초기)</option>
+              <option value="생장기">생장기 (줄기/엽면 생육)</option>
+              <option value="착과·비대기">착과·비대기 (열매 비대)</option>
+              <option value="수확임박">수확임박 (당도 축적)</option>
+              <option value="수확완료">수확완료</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 스마트 수확 주기 안내 -->
+        <div class="helper-box">
+          <i class="fa-solid fa-lightbulb"></i>
+          <div>
+            <strong>S2T 생육 주기 스마트 계산기</strong><br>
+            • <b>수박 고상재배(반촉성)</b>: 정식일 후 착과일 <b>35 ~ 40일</b> (평균 38일) | 수확일은 수정(착과) 후 <b>45 ~ 50일</b> (평균 48일)<br>
+            • <b>하미과멜론</b>: 정식일 이후 착과일 <b>30 ~ 35일</b> (평균 33일) | 수확일은 착과 후 <b>55 ~ 60일</b> (평균 58일)<br>
+            <span style="color: #15803d; font-size: 0.78rem;">💡 정식일 입력 시 위 기준에 따라 착과일 및 수확일(시작·종료·평균)이 자동 입력됩니다.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>정식일 (심은 날) <span class="required">*</span></label>
+            <input type="date" id="predFormPlantingDate" class="form-control" onchange="onPlantingDateChange()">
+          </div>
+          <div class="form-group">
+            <label>착과일 (열매 맺힌/수정일) <span id="predFruitSetBadge" style="font-weight: normal; font-size: 0.75rem; color: #15803d;"></span></label>
+            <input type="date" id="predFormFruitSetDate" class="form-control" onchange="onFruitSetDateChange()">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>예상 수확 시작일 <span id="predHarvestStartBadge" style="font-weight: normal; font-size: 0.75rem; color: #15803d;"></span></label>
+            <input type="date" id="predFormHarvestStart" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>예상 수확 종료일 <span id="predHarvestEndBadge" style="font-weight: normal; font-size: 0.75rem; color: #15803d;"></span></label>
+            <input type="date" id="predFormHarvestEnd" class="form-control">
+          </div>
+        </div>
+        <div id="predAvgHarvestNotice" style="margin-top: -6px; margin-bottom: 6px; font-size: 0.82rem; color: #15803d; font-weight: 600; padding: 6px 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; display: none;"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>예상 출하 물량 <span class="required">*</span></label>
+            <input type="number" id="predFormYield" class="form-control" placeholder="예: 5000" min="0">
+          </div>
+          <div class="form-group">
+            <label>물량 단위</label>
+            <select id="predFormUnit" class="form-control">
+              <option value="kg">kg (킬로그램)</option>
+              <option value="통">통 / 개 (과수)</option>
+            </select>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closePredictionModal()">취소</button>
+        <button class="btn btn-primary" onclick="submitPredictionForm()">생산예측 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 모달 3: 정산 및 이슈 등록 / 수정 모달                             -->
+  <!-- ============================================================== -->
+  <div id="settleModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="settleModalTitle">정산 및 이슈 등록 (유통/품질)</h2>
+        <button class="modal-close" onclick="closeSettlementModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="settleFormId">
+
+        <div class="form-group">
+          <label>연계 계약 건 선택 <span class="required">*</span></label>
+          <select id="settleFormPredSelect" class="form-control" onchange="onSettlementPredSelectChange()">
+            <option value="">계약 건을 선택하세요</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>농가명</label>
+            <input type="text" id="settleFormFarmName" class="form-control" readonly style="background: #f9fafb;">
+          </div>
+          <div class="form-group">
+            <label>재배 품목</label>
+            <input type="text" id="settleFormCrop" class="form-control" readonly style="background: #f9fafb;">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>수확일 (실제 출하일) <span class="required">*</span></label>
+            <input type="date" id="settleFormHarvestDate" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>품질 등급</label>
+            <select id="settleFormGrade" class="form-control">
+              <option value="특">특 (최상급 / 당도 기준 통과)</option>
+              <option value="상">상 (양호)</option>
+              <option value="중">중 (일반)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>실제 출하 물량 <span class="required">*</span></label>
+            <input type="number" id="settleFormActualYield" class="form-control" placeholder="예: 4800" min="0" oninput="calculateSettlementAmount()">
+          </div>
+          <div class="form-group">
+            <label>단위</label>
+            <input type="text" id="settleFormUnit" class="form-control" readonly style="background: #f9fafb;">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>책정 단가 (원) <span class="required">*</span></label>
+            <input type="number" id="settleFormUnitPrice" class="form-control" placeholder="예: 6500" min="0" oninput="calculateSettlementAmount()">
+          </div>
+          <div class="form-group">
+            <label>예상 정산금액 (자동 계산)</label>
+            <input type="text" id="settleFormAmount" class="form-control" readonly style="background: #f0fdf4; font-weight: 700; color: #15803d;" placeholder="0원">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>현장 특이사항 및 이슈 (병해충, 날씨, 품위 등)</label>
+          <div class="quick-tag-bar">
+            <span class="quick-tag" onclick="addIssueTag('당도 우수(15브릭스+)')">+ 당도 우수</span>
+            <span class="quick-tag" onclick="addIssueTag('병해충 무발생')">+ 병해충 무발생</span>
+            <span class="quick-tag" onclick="addIssueTag('흰가루병 경미 발생(방제 완료)')">+ 흰가루병 방제</span>
+            <span class="quick-tag" onclick="addIssueTag('야간 저온으로 숙기 3일 지연')">+ 야간 저온 영향</span>
+            <span class="quick-tag" onclick="addIssueTag('착과기 일조량 부족')">+ 일조량 부족</span>
+            <span class="quick-tag" onclick="addIssueTag('열과율 3% 미만 양호')">+ 열과 관리 우수</span>
+          </div>
+          <textarea id="settleFormIssues" class="form-control" rows="3" placeholder="현장 특이사항 및 방제 내역, 날씨 영향 등을 기재하세요." style="margin-top: 6px;"></textarea>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeSettlementModal()">취소</button>
+        <button class="btn btn-primary" onclick="submitSettlementForm()">정산 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 모달 4: 구글 시트 연동 설정 모달                                  -->
+  <!-- ============================================================== -->
+  <div id="configModalBackdrop" class="modal-backdrop">
+    <div class="modal">
+      <div class="modal-header">
+        <h2><i class="fa-brands fa-google-drive" style="color: #2e7d32;"></i> 구글 스프레드시트 연동 설정</h2>
+        <button class="modal-close" onclick="closeConfigModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.86rem; color: var(--text-muted); line-height: 1.5;">
+          기존 구글 스프레드시트의 <b>Apps Script</b>에 최신 코드를 배포하고 발급받은 <b>웹 앱 URL</b>을 입력하시면, 
+          스프레드시트에 <code>farms</code>, <code>predictions</code>, <code>settlements</code> 시트가 자동으로 구성되어 실시간 양방향 연동됩니다.
+        </p>
+
+        <div class="form-group">
+          <label>Google Apps Script 웹 앱 URL</label>
+          <input type="url" id="configUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
+        </div>
+
+        <div id="configTestResult" style="display: none; padding: 10px 14px; border-radius: 8px; font-size: 0.84rem;"></div>
+
+        <div class="helper-box" style="background: #f8fafc; border-color: #e2e8f0; color: #334155;">
+          <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i>
+          <div>
+            <b>구글 시트 연동 3단계 가이드</b><br>
+            1. 구글 스프레드시트 > <b>[확장 프로그램]</b> > <b>[Apps Script]</b> 열기<br>
+            2. 프로젝트 폴더 내 <code>google-apps-script.js</code> 코드로 교체 후 [저장]<br>
+            3. 우측 상단 <b>[배포] > [배포 관리]</b>에서 [수정] > <b>'새 버전'</b>으로 선택 후 배포한 웹 앱 URL을 복사해 이곳에 입력!
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="testSheetConnection()"><i class="fa-solid fa-arrows-rotate"></i> 연결 테스트</button>
+        <button class="btn btn-primary" onclick="saveSheetConfig()"><i class="fa-solid fa-check"></i> 설정 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- 모달 5: 카카오/다음 우편번호 주소 검색 모달                      -->
+  <!-- ============================================================== -->
+  <div id="postcodeModalBackdrop" class="modal-backdrop" style="z-index: 150;" onclick="if(event.target===this) closePostcodeModal()">
+    <div class="modal" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 12px;">
+      <div class="modal-header" style="padding: 12px 18px; background: #f8fafc; border-bottom: 1px solid var(--border);">
+        <h3 style="font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-map-location-dot" style="color: var(--primary);"></i> 농가 주소 검색
+        </h3>
+        <button class="modal-close" onclick="closePostcodeModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="postcodeLayerContent" style="width: 100%; height: 460px; position: relative;"></div>
+    </div>
+  </div>
+
+  <script src="api-client.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
