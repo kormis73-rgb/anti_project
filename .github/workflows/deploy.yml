@@ -21,4 +21,4 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync . s3://anti-project-bucket --delete --exclude ".git*" --exclude ".github*"
+          aws s3 sync . s3://anti-project-web-kormis --delete --exclude ".git*" --exclude ".github*"
