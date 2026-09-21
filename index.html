@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>농업회사법인 그린씨드(주) - 종자에서 생산까지, 수확에서 소비자까지 | S2T 생산관리 플랫폼</title>
+  <meta name="description" content="농업회사법인 그린씨드(주)는 종자에서 생산까지, 수확에서 소비자까지 농산물의 생산·유통·소비 전 과정 데이터를 분석하여 생산자와 소비자 모두가 가치를 실현하는 One-Step 종합 농업서비스 팜테크 기업입니다.">
+  <meta name="keywords" content="그린씨드, 농업회사법인 그린씨드, S2T, 종자에서생산까지, 수박 고상재배, 하미과멜론, 스마트팜, 팜테크, 조국래">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-dark: #1b5e20;
+      --primary-light: #4caf50;
+      --primary-bg: #e8f5e9;
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --text-light: #9ca3af;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-md: 0 6px 20px rgba(0,0,0,0.07);
+      --shadow-lg: 0 12px 32px rgba(46,125,50,0.12);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      background-color: var(--bg);
+      line-height: 1.65;
+      overflow-x: hidden;
+      word-break: keep-all;
+    }
+
+    /* 컨테이너 */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* -------------------------------------------------------------
+       1. 네비게이션 헤더 (GNB)
+    -------------------------------------------------------------- */
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 74px;
+      gap: 20px;
+    }
+
+    /* 브랜드 로고 */
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .brand-logo-img {
+      height: 42px;
+      max-width: 210px;
+      object-fit: contain;
+    }
+
+    .brand-fallback {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--primary-dark);
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    .brand-fallback i {
+      font-size: 1.4rem;
+      color: var(--primary);
+    }
+
+    /* 네비게이션 메뉴 */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #374151;
+      font-size: 0.95rem;
+      font-weight: 600;
+      position: relative;
+      padding: 6px 0;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: var(--transition);
+      transform: translateX(-50%);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* 우측 상단 액션 버튼 그룹 (핵심 요구사항) */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-admin-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #ffffff !important;
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn-admin-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(46, 125, 50, 0.45);
+      background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
+    }
+
+    .btn-sub-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #f1f5f9;
+      color: #4b5563;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: var(--transition);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .btn-sub-link:hover {
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+      border-color: #bbf7d0;
+    }
+
+    /* 모바일 햄버거 토글 */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #374151;
+      cursor: pointer;
+      padding: 6px;
+    }
+
+    /* -------------------------------------------------------------
+       2. 히어로 섹션 (Hero)
+    -------------------------------------------------------------- */
+    .hero-section {
+      position: relative;
+      padding: 90px 0 80px;
+      background: radial-gradient(circle at 80% 20%, rgba(200, 230, 201, 0.45) 0%, rgba(248, 250, 252, 0) 60%),
+                  linear-gradient(180deg, #ffffff 0%, #f4f8f4 100%);
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: 48px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+      border: 1px solid #c8e6c9;
+      border-radius: 30px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .hero-badge i {
+      color: var(--primary);
+    }
+
+    .hero-title {
+      font-size: clamp(2.1rem, 4vw, 3.1rem);
+      font-weight: 800;
+      line-height: 1.28;
+      letter-spacing: -0.8px;
+      color: #111827;
+      margin-bottom: 20px;
+    }
+
+    .hero-title span.highlight {
+      background: linear-gradient(135deg, var(--primary) 0%, #15803d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.08rem;
+      color: #4b5563;
+      line-height: 1.75;
+      margin-bottom: 32px;
+      max-width: 620px;
+    }
+
+    .hero-cta-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.02rem;
+      font-weight: 700;
+      border-radius: 12px;
+      box-shadow: var(--shadow-lg);
+      transition: var(--transition);
+    }
+
+    .btn-hero-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px rgba(46, 125, 50, 0.35);
+    }
+
+    .btn-hero-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 24px;
+      background: #ffffff;
+      color: #374151;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      transition: var(--transition);
+    }
+
+    .btn-hero-secondary:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+      color: #111827;
+    }
+
+    /* 히어로 우측 비주얼 카드 */
+    .hero-card-preview {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      position: relative;
+    }
+
+    .hero-card-preview::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), transparent 70%);
+      border-radius: var(--radius-lg);
+      z-index: -1;
+    }
+
+    .preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+
+    .preview-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    }
+
+    .preview-stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .preview-stat-box {
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #edf2f7;
+    }
+
+    .preview-stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .preview-stat-val {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #111827;
+      margin-top: 4px;
+    }
+
+    .preview-crop-pills {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .crop-pill {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .crop-pill.melon { background: #e0f2f1; color: #00695c; border: 1px solid #b2dfdb; }
+    .crop-pill.water { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+    .preview-link-btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: #f1f5f9;
+      color: var(--primary-dark);
+      text-align: center;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .preview-link-btn:hover {
+      background: var(--primary-bg);
+      color: var(--primary);
+    }
+
+    /* -------------------------------------------------------------
+       3. 회사 소개 (About Section)
+    -------------------------------------------------------------- */
+    section.section-py {
+      padding: 90px 0;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 760px;
+      margin: 0 auto 56px;
+    }
+
+    .section-tag {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.3rem);
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      font-size: 1.02rem;
+      color: #4b5563;
+      line-height: 1.7;
+    }
+
+    /* 비전 및 문제-솔루션 카드 */
+    .about-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+    }
+
+    .about-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 34px 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .about-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-md);
+      border-color: #bbf7d0;
+    }
+
+    .about-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 22px;
+    }
+
+    .about-icon.green { background: var(--primary-bg); color: var(--primary); }
+    .about-icon.amber { background: #fef3c7; color: #d97706; }
+    .about-icon.blue { background: #eff6ff; color: #2563eb; }
+
+    .about-card h3 {
+      font-size: 1.28rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+    }
+
+    .about-card p {
+      font-size: 0.94rem;
+      color: #4b5563;
+      line-height: 1.7;
+    }
+
+    /* -------------------------------------------------------------
+       4. S2T 비즈니스 모델 (Seed to Table)
+    -------------------------------------------------------------- */
+    .s2t-section {
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .s2t-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    .s2t-step-card {
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 30px 22px;
+      border: 1px solid var(--border);
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      text-align: center;
+    }
+
+    .s2t-step-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 10px 24px rgba(46, 125, 50, 0.12);
+      transform: translateY(-4px);
+    }
+
+    .step-number {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #e2e8f0;
+      line-height: 1;
+    }
+
+    .step-icon-wrap {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: var(--primary-bg);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      border: 2px dashed #a7f3d0;
+    }
+
+    .s2t-step-card h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 10px;
+    }
+
+    .s2t-step-card p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* -------------------------------------------------------------
+       5. 특화 품목 및 팜테크 적정기술 (Core Crops)
+    -------------------------------------------------------------- */
+    .crop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .crop-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .crop-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    .crop-header {
+      padding: 24px 28px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .crop-header h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .crop-badge-tag {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .crop-badge-tag.melon { background: #e0f2f1; color: #00695c; }
+    .crop-badge-tag.water { background: #ffebee; color: #c62828; }
+
+    .crop-body {
+      padding: 28px;
+    }
+
+    .crop-body p.summary {
+      font-size: 0.96rem;
+      color: #374151;
+      margin-bottom: 20px;
+      line-height: 1.7;
+    }
+
+    .crop-features {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .crop-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+
+    .crop-features li i {
+      color: var(--primary);
+      margin-top: 4px;
+      font-size: 0.88rem;
+    }
+
+    .crop-cycle-box {
+      background: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      font-size: 0.85rem;
+      color: #1f2937;
+    }
+
+    .crop-cycle-box strong {
+      color: var(--primary-dark);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* -------------------------------------------------------------
+       6. S2T 생산관리 시스템 쇼케이스 (System Preview)
+    -------------------------------------------------------------- */
+    .system-showcase-section {
+      background: radial-gradient(circle at 20% 50%, rgba(46, 125, 50, 0.08) 0%, transparent 60%),
+                  #ffffff;
+      border-top: 1px solid var(--border);
+    }
+
+    .showcase-box {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 80%, #388e3c 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 56px 48px;
+      box-shadow: 0 20px 48px rgba(27, 94, 32, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .showcase-box::after {
+      content: '';
+      position: absolute;
+      bottom: -60px;
+      right: -60px;
+      width: 260px;
+      height: 260px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 50%;
+    }
+
+    .showcase-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+    }
+
+    .showcase-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .showcase-title {
+      font-size: clamp(1.8rem, 3.2vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+
+    .showcase-desc {
+      font-size: 1.02rem;
+      color: #e8f5e9;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .showcase-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-showcase-admin {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      background: #ffffff;
+      color: var(--primary-dark);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      transition: var(--transition);
+    }
+
+    .btn-showcase-admin:hover {
+      background: #f0fdf4;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-showcase-user {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 22px;
+      background: rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(4px);
+      transition: var(--transition);
+    }
+
+    .btn-showcase-user:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* -------------------------------------------------------------
+       7. 푸터 (Footer)
+    -------------------------------------------------------------- */
+    footer.site-footer {
+      background: #111827;
+      color: #9ca3af;
+      padding: 60px 0 32px;
+      border-top: 1px solid #1f2937;
+      font-size: 0.88rem;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr;
+      gap: 40px;
+      padding-bottom: 40px;
+      border-bottom: 1px solid #1f2937;
+      margin-bottom: 30px;
+    }
+
+    .footer-brand h4 {
+      color: #ffffff;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-brand p {
+      line-height: 1.7;
+      color: #9ca3af;
+      margin-bottom: 14px;
+    }
+
+    .footer-col h5 {
+      color: #ffffff;
+      font-size: 0.92rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links a {
+      color: #9ca3af;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-light);
+    }
+
+    .footer-info-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.84rem;
+    }
+
+    .footer-info-list li span.lbl {
+      color: #6b7280;
+      display: inline-block;
+      width: 65px;
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.82rem;
+    }
+
+    /* -------------------------------------------------------------
+       8. 반응형 미디어 쿼리 (UI/UX 최적화)
+    -------------------------------------------------------------- */
+    @media (max-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      .s2t-flow-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 74px;
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        flex-direction: column;
+        padding: 20px 24px;
+        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        border-bottom: 1px solid var(--border);
+        gap: 16px;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .btn-sub-link {
+        display: none; /* 모바일에서는 주 액션 버튼만 노출하여 간결성 유지 */
+      }
+
+      .crop-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .s2t-flow-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr;
+      }
+
+      .showcase-box {
+        padding: 36px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =============================================================
+       1. 네비게이션 헤더 (GNB)
+  ============================================================== -->
+  <header class="site-header">
+    <div class="container">
+      <div class="nav-wrapper">
+        <!-- 브랜드 로고 -->
+        <a href="index.html" class="brand-logo-wrap" title="농업회사법인 그린씨드 주식회사">
+          <img src="https://static.wixstatic.com/media/e06f3d_53a083ddc7944a0b9e23dff3c0c052ae~mv2.png/v1/fill/w_254,h_45,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/greenseed-logo_fullcolor.png" 
+               alt="그린씨드 Greenseed" 
+               class="brand-logo-img"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="brand-fallback" style="display: none;">
+            <i class="fa-solid fa-seedling"></i>
+            <span>그린씨드</span>
+          </div>
+        </a>
+
+        <!-- 네비게이션 링크 -->
+        <ul class="nav-links" id="navMenu">
+          <li><a href="#about">회사 소개</a></li>
+          <li><a href="#s2t">S2T 비즈니스</a></li>
+          <li><a href="#crops">특화 품목</a></li>
+          <li><a href="#showcase">시스템 안내</a></li>
+          <li><a href="https://www.greenseed.farm" target="_blank" rel="noopener noreferrer">공식 웹사이트 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i></a></li>
+        </ul>
+
+        <!-- [핵심 요구사항] 우측 상단 관리 앱(admin.html) 연결 버튼 -->
+        <div class="nav-actions">
+          <a href="user.html" class="btn-sub-link" title="농가 관리자 전용 화면">
+            <i class="fa-solid fa-wheat-awn" style="color: var(--primary);"></i> 농가 관리자
+          </a>
+          <a href="login.html" class="btn-sub-link" title="로그인 화면">
+            <i class="fa-solid fa-key"></i> 로그인
+          </a>
+          <a href="admin.html" class="btn-admin-cta" title="S2T 생산관리 시스템 대시보드로 바로 이동">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>S2T 생산관리 시스템</span>
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
+          <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="메뉴 열기">
+            <i class="fa-solid fa-bars" id="menuIcon"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- =============================================================
+       2. 히어로 섹션 (Hero)
+  ============================================================== -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-text-content">
+          <div class="hero-badge">
+            <i class="fa-solid fa-seedling"></i> Seed to Table (S2T) One-Step 팜테크
+          </div>
+          <h1 class="hero-title">
+            종자에서 생산까지,<br>
+            수확에서 소비자까지<br>
+            <span class="highlight">그린씨드가 함께합니다</span>
+          </h1>
+          <p class="hero-desc">
+            농업회사법인 그린씨드(주)는 농산물의 생산·유통·소비 전 과정에서 수집한 데이터를 분석하여
+            생산자와 소비자 모두가 가치를 실현할 수 있도록 One-Step 종합 농업서비스를 연구 개발하는 기업입니다.
+          </p>
+          <div class="hero-cta-group">
+            <a href="admin.html" class="btn-hero-primary">
+              <i class="fa-solid fa-shield-halved"></i> S2T 생산관리 시스템 바로가기
+            </a>
+            <a href="#about" class="btn-hero-secondary">
+              <i class="fa-solid fa-circle-info"></i> 사업 내용 살펴보기
+            </a>
+          </div>
+        </div>
+
+        <!-- 히어로 우측 비주얼 프리뷰 카드 -->
+        <div class="hero-card-preview">
+          <div class="preview-header">
+            <div class="preview-title">
+              <span class="status-pulse"></span> S2T 생산관리 실시간 현황
+            </div>
+            <span style="font-size: 0.78rem; color: #15803d; font-weight: 700; background: #e8f5e9; padding: 3px 8px; border-radius: 12px;">운영 중</span>
+          </div>
+          <div class="preview-stat-grid">
+            <div class="preview-stat-box">
+              <div class="preview-stat-label">계약재배 산지 거점</div>
+              <div class="preview-stat-val" style="color: var(--primary-dark);">성주 · 부여 · 영동</div>
+            </div>
+            <div class="preview-stat-box">
+              <div class="preview-stat-label">수확 주기 예측 엔진</div>
+              <div class="preview-stat-val" style="color: #2563eb;">D-Day 연동</div>
+            </div>
+          </div>
+          <div class="preview-crop-pills">
+            <div class="crop-pill melon">
+              <span>🍈 하미과멜론</span>
+              <small style="font-size: 0.72rem; opacity: 0.8;">착과 후 55~60일</small>
+            </div>
+            <div class="crop-pill water">
+              <span>🍉 수박 고상재배</span>
+              <small style="font-size: 0.72rem; opacity: 0.8;">착과 후 45~50일</small>
+            </div>
+          </div>
+          <a href="admin.html" class="preview-link-btn">
+            대시보드 바로 접속하기 <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================
+       3. 회사 소개 (About Section)
+  ============================================================== -->
+  <section class="section-py" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">About Greenseed</span>
+        <h2 class="section-title">적정기술을 찾는 대한민국 팜테크 기업</h2>
+        <p class="section-desc">
+          그린씨드는 세상에 없던 허황된 기술을 좇지 않습니다.
+          성공사례의 철저한 데이터 분석과 검증으로 최적의 종자 선정과 식재 환경, 생산 기술을 연구하고
+          농업 현장에 최적화된 표준화 기술을 보급합니다.
+        </p>
+      </div>
+
+      <div class="about-cards-grid">
+        <!-- 카드 1: 농업의 한계 인식 -->
+        <div class="about-card">
+          <div class="about-icon amber">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <h3>농업의 한계 극복</h3>
+          <p>
+            급격한 도시화로 인한 농업인의 이탈과 급속한 고령화는 기존 노동력에만 기댄 농업의 생산성과 사업성의 한계를 드러냈습니다.
+            그린씨드는 노동 피로도를 획기적으로 낮추는 재배 환경을 설계합니다.
+          </p>
+        </div>
+
+        <!-- 카드 2: 그린씨드의 솔루션 -->
+        <div class="about-card">
+          <div class="about-icon green">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <h3>데이터 기반 적정기술</h3>
+          <p>
+            농가에 과중한 투자비 부담을 주는 설비 대신, 생육 주기(정식-착과-수확)의 표준 데이터와 수박 고상재배 등의 실용적 적정기술을 결합하여 농가의 수익성과 생산성을 실질적으로 개선합니다.
+          </p>
+        </div>
+
+        <!-- 카드 3: 그린씨드의 비전 -->
+        <div class="about-card">
+          <div class="about-icon blue">
+            <i class="fa-solid fa-handshake-simple"></i>
+          </div>
+          <h3>공정유통과 가치소비</h3>
+          <p>
+            산지와의 직결된 계약재배와 데이터 기반 출하 예측을 통해 유통 마진을 절감하고,
+            소비자에게는 신선하고 고품질의 농산물을, 생산자에게는 정당한 수익을 보장하는 상생의 가치소비를 지향합니다.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================
+       4. S2T 비즈니스 모델 (Seed to Table)
+  ============================================================== -->
+  <section class="section-py s2t-section" id="s2t">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Seed to Table Value Chain</span>
+        <h2 class="section-title">그린씨드의 S2T 비즈니스 프로세스</h2>
+        <p class="section-desc">
+          우수한 종자의 발굴부터 데이터 기반 스마트 생산, 정밀한 수확 예측, 그리고 소비자의 식탁까지 원스톱으로 연결됩니다.
+        </p>
+      </div>
+
+      <div class="s2t-flow-grid">
+        <!-- 1단계: Seed -->
+        <div class="s2t-step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-seedling"></i>
+          </div>
+          <h4>Seed (종자 선별)</h4>
+          <p>기후 변화와 시설하우스 환경에 최적화된 고당도 하미과멜론 및 반촉성 수박 우수 품종 연구·선발</p>
+        </div>
+
+        <!-- 2단계: Farm -->
+        <div class="s2t-step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-tractor"></i>
+          </div>
+          <h4>Farm (계약생산)</h4>
+          <p>충남 부여, 경북 성주, 충북 영동 등 전문 산지 농가와의 신뢰 기반 계약재배 및 표준 재배기술 지원</p>
+        </div>
+
+        <!-- 3단계: Tech -->
+        <div class="s2t-step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-chart-pie"></i>
+          </div>
+          <h4>Tech (물량 예측)</h4>
+          <p>정식일 및 착과일 데이터를 바탕으로 일조량과 숙기를 계산하여 최적 수확일(D-Day) 및 출하량 정밀 예측</p>
+        </div>
+
+        <!-- 4단계: Table -->
+        <div class="s2t-step-card">
+          <div class="step-number">04</div>
+          <div class="step-icon-wrap">
+            <i class="fa-solid fa-basket-shopping"></i>
+          </div>
+          <h4>Table (공정유통)</h4>
+          <p>홍수 출하를 방지하는 분산 출하와 산지 직송 유통으로 최고 신선도의 농산물을 식탁에 안전하게 전달</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================
+       5. 특화 품목 및 적정기술 (Core Crops)
+  ============================================================== -->
+  <section class="section-py" id="crops">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Specialty Crops & Technology</span>
+        <h2 class="section-title">그린씨드 핵심 재배 작물 및 적정기술</h2>
+        <p class="section-desc">
+          농업 현장의 노동 피로도를 줄이고 고소득을 창출하는 그린씨드만의 특화 재배 품목입니다.
+        </p>
+      </div>
+
+      <div class="crop-grid">
+        <!-- 품목 1: 수박 고상재배 -->
+        <div class="crop-card">
+          <div class="crop-header">
+            <h3>🍉 수박 고상재배 (반촉성)</h3>
+            <span class="crop-badge-tag water">적정기술 특허</span>
+          </div>
+          <div class="crop-body">
+            <p class="summary">
+              허리를 굽히지 않고 선 자세로 작업할 수 있는 고상 베드(Raised Bed) 시설을 적용하여
+              고령화된 농가의 노동 피로도를 70% 이상 경감시키고 통풍과 채광을 극대화한 혁신 농법입니다.
+            </p>
+            <ul class="crop-features">
+              <li><i class="fa-solid fa-check"></i> <span><b>작업환경 개선:</b> 바닥 포복재배 대비 관절 부담 대폭 경감 및 작업 편의성 제고</span></li>
+              <li><i class="fa-solid fa-check"></i> <span><b>병해충 및 습해 방지:</b> 지면으로부터 띄워 통기성이 우수하며 병충해 발생률 최소화</span></li>
+              <li><i class="fa-solid fa-check"></i> <span><b>품질 표준화:</b> 일조량이 고르게 전달되어 당도와 과형이 우수한 정품 수박 다수 생산</span></li>
+            </ul>
+            <div class="crop-cycle-box">
+              <strong>🌱 S2T 표준 생육 주기</strong>
+              정식 후 착과 35~40일(평균 38일) ➔ 수정 후 수확 45~50일(평균 48일)
+            </div>
+          </div>
+        </div>
+
+        <!-- 품목 2: 하미과멜론 -->
+        <div class="crop-card">
+          <div class="crop-header">
+            <h3>🍈 프리미엄 하미과멜론</h3>
+            <span class="crop-badge-tag melon">고소득 특화작물</span>
+          </div>
+          <div class="crop-body">
+            <p class="summary">
+              황제의 과일이라 불리는 하미과멜론은 일반 네트멜론보다 높은 15브릭스 이상의 독보적인 고당도와
+              배처럼 아삭아삭한 식감, 은은한 바닐라 향을 자랑하는 차세대 프리미엄 과채류입니다.
+            </p>
+            <ul class="crop-features">
+              <li><i class="fa-solid fa-check"></i> <span><b>독보적 당도 및 식감:</b> 15브릭스 이상의 높은 당도와 과육이 무르지 않는 아삭한 식감</span></li>
+              <li><i class="fa-solid fa-check"></i> <span><b>재배 안정성:</b> 내서성이 뛰어나 기후변화에 강하며 시설하우스 여름재배에 최적</span></li>
+              <li><i class="fa-solid fa-check"></i> <span><b>높은 시장 가치:</b> 희소성이 높아 일반 멜론 대비 20~30% 높은 산지 수취가 형성</span></li>
+            </ul>
+            <div class="crop-cycle-box">
+              <strong>🌱 S2T 표준 생육 주기</strong>
+              정식 후 착과 30~35일(평균 33일) ➔ 착과 후 수확 55~60일(평균 58일)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================
+       6. S2T 생산관리 시스템 쇼케이스 (System Preview)
+  ============================================================== -->
+  <section class="section-py system-showcase-section" id="showcase">
+    <div class="container">
+      <div class="showcase-box">
+        <div class="showcase-content">
+          <div class="showcase-badge">
+            <i class="fa-solid fa-laptop-code"></i> Cloud Data Dashboard
+          </div>
+          <h2 class="showcase-title">
+            스마트 계약재배 및 물량 예측,<br>
+            S2T 생산관리 시스템
+          </h2>
+          <p class="showcase-desc">
+            농가 등록부터 정식일/착과일 기반 수확 D-Day 실시간 연산, 지역별 예상 물량 집계,
+            그리고 출하 정산까지 원스톱으로 총괄 관리할 수 있는 S2T 전용 통합 관리자 포털입니다.
+          </p>
+          <div class="showcase-btn-group">
+            <a href="admin.html" class="btn-showcase-admin">
+              <i class="fa-solid fa-chart-line" style="color: var(--primary);"></i>
+              관리자 대시보드 열기
+            </a>
+            <a href="user.html" class="btn-showcase-user">
+              <i class="fa-solid fa-wheat-awn"></i> 농가 관리자 화면
+            </a>
+            <a href="login.html" class="btn-showcase-user">
+              <i class="fa-solid fa-arrow-right-to-bracket"></i> 시스템 로그인
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============================================================
+       7. 푸터 (Footer)
+  ============================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top">
+        <!-- 회사 소개 요약 -->
+        <div class="footer-brand">
+          <h4>
+            <i class="fa-solid fa-seedling" style="color: var(--primary-light);"></i>
+            농업회사법인 그린씨드 주식회사
+          </h4>
+          <p>
+            종자에서 생산까지, 수확에서 소비자까지.<br>
+            그린씨드는 데이터 기반의 One-Step 종합 농업서비스를 연구 개발하며,
+            농업의 지속가능성과 고부가가치화를 실현하는 혁신 팜테크 파트너입니다.
+          </p>
+          <div style="display: flex; gap: 10px; margin-top: 14px;">
+            <a href="https://www.greenseed.farm" target="_blank" class="btn-sub-link" style="background: #1f2937; color: #d1d5db; border-color: #374151;">
+              <i class="fa-solid fa-globe"></i> 공식 웹사이트
+            </a>
+            <a href="admin.html" class="btn-sub-link" style="background: var(--primary-dark); color: #ffffff; border-color: var(--primary);">
+              <i class="fa-solid fa-chart-line"></i> S2T 시스템 접속
+            </a>
+          </div>
+        </div>
+
+        <!-- 주요 메뉴 링크 -->
+        <div class="footer-col">
+          <h5>바로가기</h5>
+          <ul class="footer-links">
+            <li><a href="#about">회사 소개 및 비전</a></li>
+            <li><a href="#s2t">S2T 비즈니스 모델</a></li>
+            <li><a href="#crops">수박 고상재배 & 하미과멜론</a></li>
+            <li><a href="admin.html">S2T 생산관리 (admin.html)</a></li>
+            <li><a href="user.html">농가 관리자 포털 (user.html)</a></li>
+            <li><a href="login.html">통합 계정 로그인 (login.html)</a></li>
+          </ul>
+        </div>
+
+        <!-- 기업 법인 정보 -->
+        <div class="footer-col">
+          <h5>기업 정보</h5>
+          <ul class="footer-info-list">
+            <li><span class="lbl">법인명</span> 농업회사법인 그린씨드 주식회사</li>
+            <li><span class="lbl">대표자</span> 조국래</li>
+            <li><span class="lbl">본점</span> 전라북도 전주시 완산구 영경2길 15</li>
+            <li><span class="lbl">지점</span> 경기도 안산시 상록구 안산테콤길 46</li>
+            <li><span class="lbl">주요사업</span> 곡물 및 식량작물 재배, 팜테크 플랫폼</li>
+            <li><span class="lbl">웹사이트</span> <a href="https://www.greenseed.farm" target="_blank" style="color: #60a5fa;">www.greenseed.farm</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          Copyright &copy; 2026 <b>농업회사법인 그린씨드 주식회사</b>. All rights reserved.
+        </div>
+        <div>
+          Seed-to-Table (S2T) Production &amp; Harvest Management System
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 모바일 메뉴 토글 스크립트 -->
+  <script>
+    function toggleMobileMenu() {
+      const menu = document.getElementById("navMenu");
+      const icon = document.getElementById("menuIcon");
+      menu.classList.toggle("active");
+      if (menu.classList.contains("active")) {
+        icon.classList.remove("fa-bars");
+        icon.classList.add("fa-xmark");
+      } else {
+        icon.classList.remove("fa-xmark");
+        icon.classList.add("fa-bars");
+      }
+    }
+
+    // 메뉴 항목 클릭 시 모바일 메뉴 자동 닫힘
+    document.querySelectorAll(".nav-links a").forEach(link => {
+      link.addEventListener("click", () => {
+        const menu = document.getElementById("navMenu");
+        const icon = document.getElementById("menuIcon");
+        if (menu.classList.contains("active")) {
+          menu.classList.remove("active");
+          icon.classList.remove("fa-xmark");
+          icon.classList.add("fa-bars");
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

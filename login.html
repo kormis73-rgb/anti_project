@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 - S2T 계약재배 및 생산관리 시스템</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-dark: #1b5e20;
+      --primary-light: #4caf50;
+      --primary-bg: #e8f5e9;
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e8f5e9 0%, #f4f6f8 50%, #e0f2f1 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .login-container {
+      max-width: 440px;
+      width: 100%;
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-header {
+      padding: 32px 28px 24px;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .brand-icon {
+      width: 54px;
+      height: 54px;
+      margin: 0 auto 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #ffffff;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+    }
+
+    .login-header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .login-header p {
+      font-size: 0.84rem;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    /* 권한 선택 탭 */
+    .role-tabs {
+      display: flex;
+      margin: 0 24px 20px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .role-tab-btn {
+      flex: 1;
+      padding: 10px 12px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .role-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-body {
+      padding: 0 28px 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      font-size: 0.95rem;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 11px 14px 11px 40px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn-login:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-login:active {
+      transform: scale(0.99);
+    }
+
+    .error-msg {
+      background: #fee2e2;
+      color: #b91c1c;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      margin-bottom: 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 데모 퀵 로그인 박스 */
+    .demo-accounts-box {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .demo-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+    }
+
+    .demo-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .demo-btn {
+      padding: 8px 10px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.78rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      color: #374151;
+      line-height: 1.3;
+    }
+
+    .demo-btn:hover {
+      background: var(--primary-bg);
+      border-color: #a7f3d0;
+      color: var(--primary-dark);
+    }
+
+    .demo-btn strong {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-main);
+    }
+
+    .session-info-badge {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .session-info-badge i {
+      color: var(--primary);
+      margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <!-- 브랜드 헤더 -->
+    <div class="login-header">
+      <div class="brand-icon">
+        <i class="fa-solid fa-seedling"></i>
+      </div>
+      <h1>S2T 생산관리 시스템</h1>
+      <p>계약재배 · 물량 예측 · 정산 통합 플랫폼</p>
+    </div>
+
+    <!-- 역할 선택 탭 -->
+    <div class="role-tabs">
+      <button type="button" class="role-tab-btn active" id="tabAdmin" onclick="setLoginRole('admin')">
+        <i class="fa-solid fa-user-shield"></i> 관리자 로그인
+      </button>
+      <button type="button" class="role-tab-btn" id="tabUser" onclick="setLoginRole('user')">
+        <i class="fa-solid fa-wheat-awn"></i> 농가 관리자 로그인
+      </button>
+    </div>
+
+    <!-- 로그인 폼 본문 -->
+    <div class="login-body">
+      <div id="loginError" class="error-msg">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="loginErrorText">아이디 또는 비밀번호가 올바르지 않습니다.</span>
+      </div>
+
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label id="labelUsername">관리자 아이디</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-user" id="userIcon"></i>
+            <input type="text" id="usernameInput" placeholder="아이디를 입력하세요" required autocomplete="username">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>비밀번호</label>
+          <div class="input-wrap">
+            <i class="fa-solid fa-lock"></i>
+            <input type="password" id="passwordInput" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="btnLogin">
+          <span id="btnLoginText">관리자 로그인</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <!-- 데모 계정 원클릭 간편 로그인 박스 -->
+      <div class="demo-accounts-box">
+        <div class="demo-title">
+          <i class="fa-solid fa-bolt" style="color: #f59e0b;"></i> 원클릭 체험 데모 계정
+        </div>
+        <div class="demo-btn-grid" id="demoButtons">
+          <!-- JS 동적 렌더링 -->
+        </div>
+      </div>
+
+      <div class="session-info-badge">
+        <i class="fa-solid fa-shield-halved"></i> <b>세션 충돌 방지</b>: 관리자와 농가 세션은 독립적으로 분리되어 운영됩니다.
+      </div>
+    </div>
+  </div>
+
+  <script src="auth.js"></script>
+  <script>
+    let currentRole = "admin";
+
+    // URL 파라미터 확인 (예: ?reqRole=user)
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const reqRole = urlParams.get("reqRole");
+      if (reqRole === "user") {
+        setLoginRole("user");
+      } else {
+        setLoginRole("admin");
+      }
+    });
+
+    function setLoginRole(role) {
+      currentRole = role;
+      hideError();
+
+      const tabAdmin = document.getElementById("tabAdmin");
+      const tabUser = document.getElementById("tabUser");
+      const labelUser = document.getElementById("labelUsername");
+      const btnText = document.getElementById("btnLoginText");
+      const userInput = document.getElementById("usernameInput");
+      const pwInput = document.getElementById("passwordInput");
+
+      if (role === "admin") {
+        tabAdmin.classList.add("active");
+        tabUser.classList.remove("active");
+        labelUser.textContent = "관리자 아이디";
+        btnText.textContent = "관리자 로그인";
+        userInput.value = "admin";
+        pwInput.value = "admin1234";
+        renderDemoButtons("admin");
+      } else {
+        tabUser.classList.add("active");
+        tabAdmin.classList.remove("active");
+        labelUser.textContent = "농가 관리자 아이디 (또는 농가코드)";
+        btnText.textContent = "농가 관리자 로그인";
+        userInput.value = "farm1";
+        pwInput.value = "1234";
+        renderDemoButtons("user");
+      }
+    }
+
+    function renderDemoButtons(role) {
+      const container = document.getElementById("demoButtons");
+      if (role === "admin") {
+        container.innerHTML = `
+          <button type="button" class="demo-btn" onclick="fillAndLogin('admin', 'admin1234', 'admin')" style="grid-column: span 2;">
+            <strong>🛡️ 총괄 관리자 (admin)</strong>
+            <span>통합 모니터링 및 전 기능 관리 권한</span>
+          </button>
+        `;
+      } else {
+        container.innerHTML = `
+          <button type="button" class="demo-btn" onclick="fillAndLogin('farm1', '1234', 'user')">
+            <strong>🍈 김성주 농가</strong>
+            <span>하미과멜론 (FARM-001)</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="fillAndLogin('farm2', '1234', 'user')">
+            <strong>🍉 박부여 농가</strong>
+            <span>수박 고상재배 (FARM-002)</span>
+          </button>
+          <button type="button" class="demo-btn" onclick="fillAndLogin('farm3', '1234', 'user')" style="grid-column: span 2;">
+            <strong>🍈 이영동 농가</strong>
+            <span>하미과멜론 (FARM-003)</span>
+          </button>
+        `;
+      }
+    }
+
+    async function fillAndLogin(user, pw, role) {
+      document.getElementById("usernameInput").value = user;
+      document.getElementById("passwordInput").value = pw;
+      await processLogin(user, pw, role);
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const user = document.getElementById("usernameInput").value.trim();
+      const pw = document.getElementById("passwordInput").value.trim();
+      await processLogin(user, pw, currentRole);
+    }
+
+    async function processLogin(user, pw, role) {
+      hideError();
+      const result = await s2tAuth.login(user, pw, role);
+
+      if (result.success) {
+        // 성공 시 리다이렉트
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect = urlParams.get("redirect");
+
+        if (role === "admin") {
+          window.location.href = (redirect && redirect.includes("admin")) ? redirect : "admin.html";
+        } else {
+          window.location.href = (redirect && redirect.includes("user")) ? redirect : "user.html";
+        }
+      } else {
+        showError(result.message);
+      }
+    }
+
+    function showError(msg) {
+      const err = document.getElementById("loginError");
+      document.getElementById("loginErrorText").textContent = msg;
+      err.style.display = "flex";
+    }
+
+    function hideError() {
+      document.getElementById("loginError").style.display = "none";
+    }
+  </script>
+</body>
+</html>
