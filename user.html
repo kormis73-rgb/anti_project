@@ -42,18 +42,24 @@
       flex-direction: column;
     }
 
-    /* 상단 헤더 */
+    /* 상단 헤더 (화면 중앙 정렬) */
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
-      padding: 16px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       position: sticky;
       top: 0;
       z-index: 50;
       box-shadow: var(--shadow-sm);
+    }
+
+    .header-container {
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .brand {
@@ -373,22 +379,24 @@
 </head>
 <body>
 
-  <!-- 헤더 -->
+  <!-- 헤더 (화면 중앙 정렬 Centered Container) -->
   <header>
-    <div class="brand">
-      <div class="brand-icon">
-        <i class="fa-solid fa-wheat-awn"></i>
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-wheat-awn"></i>
+        </div>
+        <div class="brand-title">
+          <h1>S2T 농가 관리자</h1>
+          <p>내 농가 계약생산 및 실시간 생육 모니터링</p>
+        </div>
       </div>
-      <div class="brand-title">
-        <h1>S2T 농가 관리자</h1>
-        <p>내 농가 계약생산 및 실시간 생육 모니터링</p>
+      <div class="header-actions">
+        <div id="userProfileContainer"></div>
+        <a href="admin.html" target="_blank" class="btn btn-outline btn-sm" title="관리자 권한 화면 열기 (권한 필요)">
+          <i class="fa-solid fa-user-shield"></i> 관리자 화면
+        </a>
       </div>
-    </div>
-    <div class="header-actions">
-      <div id="userProfileContainer"></div>
-      <a href="admin.html" target="_blank" class="btn btn-outline btn-sm" title="관리자 권한 화면 열기 (권한 필요)">
-        <i class="fa-solid fa-user-shield"></i> 관리자 화면
-      </a>
     </div>
   </header>
 
