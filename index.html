@@ -62,27 +62,30 @@
     }
 
     /* -------------------------------------------------------------
-       1. 네비게이션 헤더 (GNB)
+       1. 네비게이션 헤더 (GNB) - 로고 하단에 별도 메뉴 바 구성
     -------------------------------------------------------------- */
     header.site-header {
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.98);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      transition: var(--transition);
+      box-shadow: var(--shadow-sm);
     }
 
-    .nav-wrapper {
+    /* 상단: 그린씨드 로고 바 */
+    .header-top-bar {
+      border-bottom: 1px solid #f1f5f9;
+      padding: 12px 0;
+    }
+
+    .header-top-container {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      height: 74px;
-      gap: 20px;
     }
 
-    /* 브랜드 로고 */
     .brand-logo-wrap {
       display: flex;
       align-items: center;
@@ -92,7 +95,7 @@
 
     .brand-logo-img {
       height: 42px;
-      max-width: 210px;
+      max-width: 230px;
       object-fit: contain;
     }
 
@@ -110,12 +113,52 @@
       color: var(--primary);
     }
 
-    /* 네비게이션 메뉴 */
+    .header-top-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-external-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 15px;
+      background: #f8fafc;
+      color: #4b5563;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid #e2e8f0;
+      transition: var(--transition);
+    }
+
+    .btn-external-link:hover {
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+      border-color: #bbf7d0;
+    }
+
+    /* 하단: 그린씨드 로고 밑으로 별도 구성된 메뉴 바 */
+    .header-nav-bar {
+      background: #ffffff;
+    }
+
+    .nav-sub-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 52px;
+    }
+
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 32px;
       list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
     .nav-links a {
@@ -124,11 +167,24 @@
       font-size: 0.95rem;
       font-weight: 600;
       position: relative;
-      padding: 6px 0;
+      padding: 13px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       transition: var(--transition);
     }
 
+    .nav-links a i {
+      font-size: 0.85rem;
+      color: var(--text-light);
+      transition: color 0.2s;
+    }
+
     .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a:hover i {
       color: var(--primary);
     }
 
@@ -138,8 +194,9 @@
       bottom: 0;
       left: 50%;
       width: 0;
-      height: 2px;
+      height: 3px;
       background: var(--primary);
+      border-radius: 3px 3px 0 0;
       transition: var(--transition);
       transform: translateX(-50%);
     }
@@ -148,25 +205,24 @@
       width: 100%;
     }
 
-    /* 우측 상단 액션 버튼 그룹 (핵심 요구사항) */
-    .nav-actions {
+    .nav-cta-wrapper {
       display: flex;
       align-items: center;
-      gap: 10px;
     }
 
+    /* 상단 메뉴 마지막 항목: S2T 생산관리 시스템 CTA 버튼 */
     .btn-admin-cta {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
       color: #ffffff !important;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-size: 0.92rem;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.9rem;
       font-weight: 700;
       text-decoration: none;
-      box-shadow: 0 4px 14px rgba(46, 125, 50, 0.35);
+      box-shadow: 0 3px 10px rgba(46, 125, 50, 0.28);
       border: 1px solid rgba(255, 255, 255, 0.2);
       transition: var(--transition);
       white-space: nowrap;
@@ -174,74 +230,62 @@
 
     .btn-admin-cta:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(46, 125, 50, 0.45);
+      box-shadow: 0 6px 18px rgba(46, 125, 50, 0.4);
       background: linear-gradient(135deg, #388e3c 0%, #1b5e20 100%);
     }
 
-    .btn-sub-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 14px;
-      background: #f1f5f9;
-      color: #4b5563;
-      text-decoration: none;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: var(--transition);
-      border: 1px solid transparent;
-      white-space: nowrap;
-    }
-
-    .btn-sub-link:hover {
-      background: var(--primary-bg);
-      color: var(--primary-dark);
-      border-color: #bbf7d0;
-    }
-
-    /* 모바일 햄버거 토글 */
     .mobile-menu-btn {
       display: none;
       background: none;
-      border: none;
-      font-size: 1.5rem;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 1.1rem;
       color: #374151;
       cursor: pointer;
-      padding: 6px;
     }
 
     /* -------------------------------------------------------------
        2. 히어로 섹션 (Hero)
     -------------------------------------------------------------- */
     .hero-section {
+      padding: 80px 0 70px;
+      background: linear-gradient(180deg, #f0fdf4 0%, #f8fafc 100%);
       position: relative;
-      padding: 90px 0 80px;
-      background: radial-gradient(circle at 80% 20%, rgba(200, 230, 201, 0.45) 0%, rgba(248, 250, 252, 0) 60%),
-                  linear-gradient(180deg, #ffffff 0%, #f4f8f4 100%);
       overflow: hidden;
-      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -80px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(76, 175, 80, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .hero-grid {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px;
       align-items: center;
-      gap: 48px;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 6px 14px;
-      background: var(--primary-bg);
+      background: #e8f5e9;
       color: var(--primary-dark);
-      border: 1px solid #c8e6c9;
-      border-radius: 30px;
+      padding: 6px 14px;
+      border-radius: 20px;
       font-size: 0.86rem;
       font-weight: 700;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
+      border: 1px solid #c8e6c9;
     }
 
     .hero-badge i {
@@ -249,26 +293,26 @@
     }
 
     .hero-title {
-      font-size: clamp(2.1rem, 4vw, 3.1rem);
+      font-size: clamp(2rem, 3.8vw, 3rem);
       font-weight: 800;
-      line-height: 1.28;
-      letter-spacing: -0.8px;
       color: #111827;
+      line-height: 1.25;
       margin-bottom: 20px;
+      letter-spacing: -0.8px;
     }
 
     .hero-title span.highlight {
-      background: linear-gradient(135deg, var(--primary) 0%, #15803d 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--primary);
+      position: relative;
+      display: inline-block;
     }
 
     .hero-desc {
-      font-size: 1.08rem;
+      font-size: 1.05rem;
       color: #4b5563;
       line-height: 1.75;
-      margin-bottom: 32px;
-      max-width: 620px;
+      margin-bottom: 34px;
+      max-width: 580px;
     }
 
     .hero-cta-group {
@@ -283,19 +327,20 @@
       align-items: center;
       gap: 10px;
       padding: 14px 28px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      background: var(--primary);
       color: #ffffff;
       text-decoration: none;
-      font-size: 1.02rem;
+      font-size: 1rem;
       font-weight: 700;
       border-radius: 12px;
-      box-shadow: var(--shadow-lg);
+      box-shadow: 0 4px 14px rgba(46, 125, 50, 0.3);
       transition: var(--transition);
     }
 
     .btn-hero-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 16px 36px rgba(46, 125, 50, 0.35);
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(46, 125, 50, 0.4);
     }
 
     .btn-hero-secondary {
@@ -309,63 +354,42 @@
       font-size: 1rem;
       font-weight: 600;
       border-radius: 12px;
-      border: 1px solid #d1d5db;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
       transition: var(--transition);
     }
 
     .btn-hero-secondary:hover {
       background: #f9fafb;
-      border-color: #9ca3af;
-      color: #111827;
+      border-color: #cbd5e1;
     }
 
-    /* 히어로 우측 비주얼 카드 */
+    /* 히어로 우측 프리뷰 카드 */
     .hero-card-preview {
       background: #ffffff;
       border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-lg);
       padding: 28px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(226, 232, 240, 0.8);
       position: relative;
-    }
-
-    .hero-card-preview::before {
-      content: '';
-      position: absolute;
-      top: -10px;
-      right: -10px;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), transparent 70%);
-      border-radius: var(--radius-lg);
-      z-index: -1;
     }
 
     .preview-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid #f1f5f9;
       padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
       margin-bottom: 20px;
     }
 
     .preview-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--primary-dark);
       display: flex;
       align-items: center;
-      gap: 6px;
-    }
-
-    .status-pulse {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #111827;
     }
 
     .preview-stat-grid {
@@ -377,67 +401,74 @@
 
     .preview-stat-box {
       background: #f8fafc;
-      padding: 16px;
-      border-radius: 12px;
-      border: 1px solid #edf2f7;
+      padding: 14px 16px;
+      border-radius: 10px;
+      border: 1px solid #f1f5f9;
     }
 
     .preview-stat-label {
       font-size: 0.78rem;
       color: var(--text-muted);
-      font-weight: 600;
+      margin-bottom: 4px;
     }
 
     .preview-stat-val {
-      font-size: 1.45rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      color: #111827;
-      margin-top: 4px;
+      color: var(--primary-dark);
     }
 
     .preview-crop-pills {
       display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 22px;
     }
 
     .crop-pill {
-      flex: 1;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 0.84rem;
-      font-weight: 600;
-      text-align: center;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 6px;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
     }
 
-    .crop-pill.melon { background: #e0f2f1; color: #00695c; border: 1px solid #b2dfdb; }
-    .crop-pill.water { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+    .crop-pill.melon {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .crop-pill.water {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
 
     .preview-link-btn {
       display: block;
       width: 100%;
-      padding: 12px;
-      background: #f1f5f9;
-      color: var(--primary-dark);
       text-align: center;
-      border-radius: 10px;
-      font-size: 0.9rem;
+      padding: 12px;
+      background: var(--primary-bg);
+      color: var(--primary-dark);
       font-weight: 700;
+      font-size: 0.92rem;
+      border-radius: 8px;
       text-decoration: none;
       transition: var(--transition);
+      border: 1px solid #c8e6c9;
     }
 
     .preview-link-btn:hover {
-      background: var(--primary-bg);
-      color: var(--primary);
+      background: var(--primary);
+      color: #ffffff;
     }
 
     /* -------------------------------------------------------------
-       3. 회사 소개 (About Section)
+       공통 섹션 레이아웃
     -------------------------------------------------------------- */
     section.section-py {
       padding: 90px 0;
@@ -445,45 +476,58 @@
 
     .section-header {
       text-align: center;
-      max-width: 760px;
+      max-width: 860px;
       margin: 0 auto 56px;
     }
 
     .section-tag {
-      font-size: 0.85rem;
+      display: inline-block;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--primary);
+      background: var(--primary-bg);
+      padding: 4px 14px;
+      border-radius: 20px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      display: inline-block;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
     }
 
     .section-title {
-      font-size: clamp(1.8rem, 3vw, 2.3rem);
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
       font-weight: 800;
       color: #111827;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.6px;
       margin-bottom: 16px;
     }
 
     .section-desc {
       font-size: 1.02rem;
-      color: #4b5563;
+      color: var(--text-muted);
       line-height: 1.7;
     }
 
-    /* 비전 및 문제-솔루션 카드 */
+    /* [요구사항 5] S2T 설명문 한 줄 표기 스타일 */
+    .s2t-single-line {
+      white-space: nowrap;
+      font-size: clamp(0.85rem, 1.8vw, 1.05rem);
+      margin: 0 auto;
+      letter-spacing: -0.3px;
+    }
+
+    /* -------------------------------------------------------------
+       3. 회사 소개 (About Greenseed)
+    -------------------------------------------------------------- */
     .about-cards-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
     }
 
     .about-card {
-      background: #ffffff;
+      background: var(--card-bg);
       border-radius: var(--radius-md);
-      padding: 34px 28px;
+      padding: 36px 30px;
       border: 1px solid var(--border);
       box-shadow: var(--shadow-sm);
       transition: var(--transition);
@@ -492,9 +536,9 @@
     }
 
     .about-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-6px);
       box-shadow: var(--shadow-md);
-      border-color: #bbf7d0;
+      border-color: #cbd5e1;
     }
 
     .about-icon {
@@ -601,16 +645,18 @@
     .crop-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 32px;
+      gap: 30px;
     }
 
     .crop-card {
       background: #ffffff;
       border-radius: var(--radius-lg);
-      overflow: hidden;
       border: 1px solid var(--border);
+      overflow: hidden;
       box-shadow: var(--shadow-sm);
       transition: var(--transition);
+      display: flex;
+      flex-direction: column;
     }
 
     .crop-card:hover {
@@ -619,33 +665,43 @@
     }
 
     .crop-header {
-      padding: 24px 28px 20px;
+      padding: 24px 28px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #f1f5f9;
     }
 
     .crop-header h3 {
-      font-size: 1.35rem;
+      font-size: 1.3rem;
       font-weight: 800;
+      color: #111827;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .crop-badge-tag {
-      font-size: 0.76rem;
+      font-size: 0.8rem;
       font-weight: 700;
       padding: 4px 10px;
-      border-radius: 20px;
+      border-radius: 6px;
     }
 
-    .crop-badge-tag.melon { background: #e0f2f1; color: #00695c; }
-    .crop-badge-tag.water { background: #ffebee; color: #c62828; }
+    .crop-badge-tag.water {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .crop-badge-tag.melon {
+      background: #dcfce7;
+      color: #15803d;
+    }
 
     .crop-body {
       padding: 28px;
+      flex: 1;
     }
 
     .crop-body p.summary {
@@ -783,27 +839,6 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
 
-    .btn-showcase-user {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 14px 22px;
-      background: rgba(255, 255, 255, 0.15);
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 600;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(4px);
-      transition: var(--transition);
-    }
-
-    .btn-showcase-user:hover {
-      background: rgba(255, 255, 255, 0.25);
-      transform: translateY(-2px);
-    }
-
     /* -------------------------------------------------------------
        7. 푸터 (Footer)
     -------------------------------------------------------------- */
@@ -904,30 +939,46 @@
     }
 
     @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 74px;
-        left: 0;
-        right: 0;
-        background: #ffffff;
-        flex-direction: column;
-        padding: 20px 24px;
-        box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-        border-bottom: 1px solid var(--border);
-        gap: 16px;
-      }
-
-      .nav-links.active {
-        display: flex;
-      }
-
       .mobile-menu-btn {
         display: block;
       }
 
-      .btn-sub-link {
-        display: none; /* 모바일에서는 주 액션 버튼만 노출하여 간결성 유지 */
+      .btn-external-link {
+        display: none;
+      }
+
+      .nav-sub-container {
+        display: none;
+        flex-direction: column;
+        height: auto;
+        padding: 16px 0 20px;
+        gap: 16px;
+        border-top: 1px solid #f1f5f9;
+      }
+
+      .nav-sub-container.active {
+        display: flex;
+      }
+
+      .nav-links {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        width: 100%;
+      }
+
+      .nav-links a {
+        padding: 8px 0;
+        width: 100%;
+      }
+
+      .nav-cta-wrapper {
+        width: 100%;
+      }
+
+      .btn-admin-cta {
+        width: 100%;
+        justify-content: center;
       }
 
       .crop-grid {
@@ -951,12 +1002,13 @@
 <body>
 
   <!-- =============================================================
-       1. 네비게이션 헤더 (GNB)
+       1. 네비게이션 헤더 (GNB) - 로고 하단에 별도 메뉴 바 구성
   ============================================================== -->
   <header class="site-header">
-    <div class="container">
-      <div class="nav-wrapper">
-        <!-- 브랜드 로고 -->
+    <!-- 1단: 로고 및 공식 사이트 바 -->
+    <div class="header-top-bar">
+      <div class="container header-top-container">
+        <!-- 그린씨드 로고 -->
         <a href="index.html" class="brand-logo-wrap" title="농업회사법인 그린씨드 주식회사">
           <img src="https://static.wixstatic.com/media/e06f3d_53a083ddc7944a0b9e23dff3c0c052ae~mv2.png/v1/fill/w_254,h_45,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/greenseed-logo_fullcolor.png" 
                alt="그린씨드 Greenseed" 
@@ -968,32 +1020,38 @@
           </div>
         </a>
 
-        <!-- 네비게이션 링크 -->
-        <ul class="nav-links" id="navMenu">
-          <li><a href="#about">회사 소개</a></li>
-          <li><a href="#s2t">S2T 비즈니스</a></li>
-          <li><a href="#crops">특화 품목</a></li>
-          <li><a href="#showcase">시스템 안내</a></li>
-          <li><a href="https://www.greenseed.farm" target="_blank" rel="noopener noreferrer">공식 웹사이트 <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i></a></li>
-        </ul>
-
-        <!-- [핵심 요구사항] 우측 상단 관리 앱(admin.html) 연결 버튼 -->
-        <div class="nav-actions">
-          <a href="user.html" class="btn-sub-link" title="농가 관리자 전용 화면">
-            <i class="fa-solid fa-wheat-awn" style="color: var(--primary);"></i> 농가 관리자
-          </a>
-          <a href="login.html" class="btn-sub-link" title="로그인 화면">
-            <i class="fa-solid fa-key"></i> 로그인
-          </a>
-          <a href="admin.html" class="btn-admin-cta" title="S2T 생산관리 시스템 대시보드로 바로 이동">
-            <i class="fa-solid fa-chart-line"></i>
-            <span>S2T 생산관리 시스템</span>
-            <i class="fa-solid fa-angle-right"></i>
+        <!-- 우측: 공식 웹사이트 링크 및 모바일 메뉴 버튼 -->
+        <div class="header-top-right">
+          <a href="https://www.greenseed.farm" target="_blank" rel="noopener noreferrer" class="btn-external-link" title="그린씨드 공식 홈페이지">
+            <i class="fa-solid fa-globe"></i>
+            <span>공식 웹사이트 (greenseed.farm)</span>
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.75rem;"></i>
           </a>
           <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="메뉴 열기">
             <i class="fa-solid fa-bars" id="menuIcon"></i>
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- 2단: 그린씨드 로고 밑으로 별도 구성된 메뉴 바 ([회사 소개] [S2T 비즈니스] [특화 품목] [시스템 안내] [S2T 생산관리 시스템]) -->
+    <div class="header-nav-bar">
+      <div class="container">
+        <nav class="nav-sub-container" id="navMenu">
+          <ul class="nav-links">
+            <li><a href="#about"><i class="fa-regular fa-building"></i> 회사 소개</a></li>
+            <li><a href="#s2t"><i class="fa-solid fa-arrows-spin"></i> S2T 비즈니스</a></li>
+            <li><a href="#crops"><i class="fa-solid fa-leaf"></i> 특화 품목</a></li>
+            <li><a href="#showcase"><i class="fa-solid fa-circle-info"></i> 시스템 안내</a></li>
+          </ul>
+          <div class="nav-cta-wrapper">
+            <a href="admin.html" class="btn-admin-cta" title="S2T 생산관리 시스템 바로가기">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>S2T 생산관리 시스템</span>
+              <i class="fa-solid fa-angle-right"></i>
+            </a>
+          </div>
+        </nav>
       </div>
     </div>
   </header>
@@ -1019,7 +1077,7 @@
           </p>
           <div class="hero-cta-group">
             <a href="admin.html" class="btn-hero-primary">
-              <i class="fa-solid fa-shield-halved"></i> S2T 생산관리 시스템 바로가기
+              <i class="fa-solid fa-chart-line"></i> S2T 생산관리 시스템 바로가기
             </a>
             <a href="#about" class="btn-hero-secondary">
               <i class="fa-solid fa-circle-info"></i> 사업 내용 살펴보기
@@ -1056,7 +1114,7 @@
             </div>
           </div>
           <a href="admin.html" class="preview-link-btn">
-            대시보드 바로 접속하기 <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i>
+            S2T 대시보드 바로 접속하기 <i class="fa-solid fa-arrow-right" style="margin-left: 4px;"></i>
           </a>
         </div>
       </div>
@@ -1125,9 +1183,8 @@
       <div class="section-header">
         <span class="section-tag">Seed to Table Value Chain</span>
         <h2 class="section-title">그린씨드의 S2T 비즈니스 프로세스</h2>
-        <p class="section-desc">
-          우수한 종자의 발굴부터 데이터 기반 스마트 생산, 정밀한 수확 예측, 그리고 소비자의 식탁까지 원스톱으로 연결됩니다.
-        </p>
+        <!-- [요구사항 5] 한 줄로 표기 -->
+        <p class="section-desc s2t-single-line">우수한 종자의 발굴부터 데이터 기반 스마트 생산, 정밀한 수확 예측, 그리고 소비자의 식탁까지 원스톱으로 연결됩니다.</p>
       </div>
 
       <div class="s2t-flow-grid">
@@ -1258,13 +1315,7 @@
           <div class="showcase-btn-group">
             <a href="admin.html" class="btn-showcase-admin">
               <i class="fa-solid fa-chart-line" style="color: var(--primary);"></i>
-              관리자 대시보드 열기
-            </a>
-            <a href="user.html" class="btn-showcase-user">
-              <i class="fa-solid fa-wheat-awn"></i> 농가 관리자 화면
-            </a>
-            <a href="login.html" class="btn-showcase-user">
-              <i class="fa-solid fa-arrow-right-to-bracket"></i> 시스템 로그인
+              S2T 생산관리 시스템 접속하기
             </a>
           </div>
         </div>
@@ -1290,25 +1341,24 @@
             농업의 지속가능성과 고부가가치화를 실현하는 혁신 팜테크 파트너입니다.
           </p>
           <div style="display: flex; gap: 10px; margin-top: 14px;">
-            <a href="https://www.greenseed.farm" target="_blank" class="btn-sub-link" style="background: #1f2937; color: #d1d5db; border-color: #374151;">
+            <a href="https://www.greenseed.farm" target="_blank" rel="noopener noreferrer" class="btn-external-link" style="background: #1f2937; color: #d1d5db; border-color: #374151;">
               <i class="fa-solid fa-globe"></i> 공식 웹사이트
             </a>
-            <a href="admin.html" class="btn-sub-link" style="background: var(--primary-dark); color: #ffffff; border-color: var(--primary);">
-              <i class="fa-solid fa-chart-line"></i> S2T 시스템 접속
+            <a href="admin.html" class="btn-admin-cta" style="padding: 7px 16px; font-size: 0.84rem;">
+              <i class="fa-solid fa-chart-line"></i> S2T 생산관리 바로가기
             </a>
           </div>
         </div>
 
-        <!-- 주요 메뉴 링크 -->
+        <!-- 주요 메뉴 바로가기 -->
         <div class="footer-col">
           <h5>바로가기</h5>
           <ul class="footer-links">
             <li><a href="#about">회사 소개 및 비전</a></li>
             <li><a href="#s2t">S2T 비즈니스 모델</a></li>
-            <li><a href="#crops">수박 고상재배 & 하미과멜론</a></li>
-            <li><a href="admin.html">S2T 생산관리 (admin.html)</a></li>
-            <li><a href="user.html">농가 관리자 포털 (user.html)</a></li>
-            <li><a href="login.html">통합 계정 로그인 (login.html)</a></li>
+            <li><a href="#crops">수박 고상재배 &amp; 하미과멜론</a></li>
+            <li><a href="#showcase">S2T 시스템 안내</a></li>
+            <li><a href="https://www.greenseed.farm" target="_blank" rel="noopener noreferrer">그린씨드 공식 웹사이트</a></li>
           </ul>
         </div>
 
@@ -1318,10 +1368,9 @@
           <ul class="footer-info-list">
             <li><span class="lbl">법인명</span> 농업회사법인 그린씨드 주식회사</li>
             <li><span class="lbl">대표자</span> 조국래</li>
-            <li><span class="lbl">본점</span> 전라북도 전주시 완산구 영경2길 15</li>
-            <li><span class="lbl">지점</span> 경기도 안산시 상록구 안산테콤길 46</li>
+            <li><span class="lbl">본점</span> 전라북도 전주시 완산구 영경2길 15, 4층</li>
             <li><span class="lbl">주요사업</span> 곡물 및 식량작물 재배, 팜테크 플랫폼</li>
-            <li><span class="lbl">웹사이트</span> <a href="https://www.greenseed.farm" target="_blank" style="color: #60a5fa;">www.greenseed.farm</a></li>
+            <li><span class="lbl">웹사이트</span> <a href="https://www.greenseed.farm" target="_blank" rel="noopener noreferrer" style="color: #60a5fa;">www.greenseed.farm</a></li>
           </ul>
         </div>
       </div>
