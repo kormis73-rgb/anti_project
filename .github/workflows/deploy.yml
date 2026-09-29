@@ -1,4 +1,4 @@
-name: Deploy Web to AWS S3
+name: Deploy to AWS S3
 
 on:
   push:
@@ -12,6 +12,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
