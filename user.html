@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>농가 전용 포털 - S2T 생산관리</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="auth.js"></script>
+  <script>
+    // 농가 세션 가드 (농가 권한 세션이 없으면 로그인 페이지로 이동)
+    const userSession = s2tAuth.requireRole("user");
+  </script>
+  <style>
+    :root {
+      --primary: #1b5e20;
+      --primary-mid: #2e7d32;
+      --primary-light: #4caf50;
+      --primary-bg: #e8f5e9;
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --warning: #f59e0b;
+      --warning-bg: #fef3c7;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 상단 헤더 */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      color: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 2px 6px rgba(46, 125, 50, 0.3);
+    }
+
+    .brand-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary-mid);
+      color: white;
+    }
+    .btn-primary:hover {
+      background: var(--primary);
+    }
+
+    .btn-outline {
+      background: white;
+      border-color: #d1d5db;
+      color: var(--text-main);
+    }
+    .btn-outline:hover {
+      background: #f9fafb;
+    }
+
+    .btn-sm {
+      padding: 5px 10px;
+      font-size: 0.8rem;
+    }
+
+    /* 메인 레이아웃 (admin.html과 완벽 일치) */
+    main {
+      flex: 1;
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 16px;
+      }
+      main {
+        padding: 14px;
+        gap: 16px;
+      }
+      .farm-hero-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .farm-hero-stats {
+        flex-wrap: wrap;
+      }
+      .hero-stat-pill {
+        flex: 1;
+      }
+    }
+
+    /* 환영 및 농가 핵심 카드 */
+    .farm-hero-card {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+      color: #ffffff;
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .farm-hero-info h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .crop-badge {
+      background: rgba(255, 255, 255, 0.25);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    .farm-hero-info p {
+      font-size: 0.88rem;
+      opacity: 0.9;
+      margin-top: 6px;
+    }
+
+    .farm-hero-stats {
+      display: flex;
+      gap: 14px;
+    }
+
+    .hero-stat-pill {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px 16px;
+      border-radius: 10px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .hero-stat-pill .val {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .hero-stat-pill .lbl {
+      font-size: 0.72rem;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    /* 섹션 카드 */
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+    }
+
+    .card-header h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* 폼 그리드 */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary-mid);
+      box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    }
+
+    .form-control[readonly] {
+      background: #f9fafb;
+    }
+
+    /* 스마트 안내 박스 */
+    .smart-calc-box {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-top: 14px;
+      font-size: 0.84rem;
+      color: #166534;
+      line-height: 1.5;
+    }
+
+    /* 정산 요약 그리드 */
+    .settlement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .settle-stat-box {
+      padding: 14px;
+      border-radius: 10px;
+      background: #f9fafb;
+      border: 1px solid var(--border);
+    }
+
+    .settle-stat-box .title {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .settle-stat-box .val {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    /* 퀵 태그 */
+    .quick-tag-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .quick-tag {
+      padding: 5px 9px;
+      border-radius: 6px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      font-size: 0.78rem;
+      cursor: pointer;
+      color: #4b5563;
+      transition: all 0.15s;
+    }
+
+    .quick-tag:hover {
+      background: var(--primary-bg);
+      color: var(--primary);
+      border-color: #86efac;
+    }
+
+    /* 알림 메시지 토스트 */
+    .toast {
+      padding: 12px 16px;
+      background: #dcfce7;
+      color: #15803d;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 헤더 -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="fa-solid fa-wheat-awn"></i>
+      </div>
+      <div class="brand-title">
+        <h1>S2T 농가 관리자</h1>
+        <p>내 농가 계약생산 및 실시간 생육 모니터링</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <div id="userProfileContainer"></div>
+      <a href="admin.html" target="_blank" class="btn btn-outline btn-sm" title="관리자 권한 화면 열기 (권한 필요)">
+        <i class="fa-solid fa-user-shield"></i> 관리자 화면
+      </a>
+    </div>
+  </header>
+
+  <!-- 메인 컨텐츠 -->
+  <main>
+    <div id="saveToast" class="toast">
+      <i class="fa-solid fa-circle-check"></i>
+      <span id="toastMsg">내용이 안전하게 저장되었습니다.</span>
+    </div>
+
+    <!-- 1. 내 농가 요약 히어로 카드 -->
+    <div class="farm-hero-card">
+      <div class="farm-hero-info">
+        <h2>
+          <span id="heroFarmName">농가명</span>
+          <span class="crop-badge" id="heroCropType">품목</span>
+        </h2>
+        <p><i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i> <span id="heroRegion">농가 주소지</span></p>
+        <p><i class="fa-solid fa-phone" style="margin-right: 4px;"></i> <span id="heroPhone">010-0000-0000</span> | 계약상태: <b id="heroStatus" style="color: #a7f3d0;">계약 완료</b></p>
+      </div>
+      <div class="farm-hero-stats">
+        <div class="hero-stat-pill">
+          <div class="val" id="heroHouses">0동</div>
+          <div class="lbl">하우스 규모</div>
+        </div>
+        <div class="hero-stat-pill">
+          <div class="val" id="heroArea">0평</div>
+          <div class="lbl">재배 면적</div>
+        </div>
+        <div class="hero-stat-pill">
+          <div class="val" id="heroDDay">-</div>
+          <div class="lbl">수확 D-Day</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 내 생산 예측 및 생육 단계 관리 (S2T 스마트 연산) -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-seedling" style="color: #2e7d32;"></i> 내 생산예측 & 생육주기 관리 (S2T)</h3>
+        <button class="btn btn-primary btn-sm" onclick="saveFarmerPrediction()">
+          <i class="fa-solid fa-floppy-disk"></i> 내 생육정보 저장
+        </button>
+      </div>
+      <div class="card-body">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>계약 ID</label>
+            <input type="text" id="farmerContractId" class="form-control" readonly>
+          </div>
+          <div class="form-group">
+            <label>현재 생육 단계 (보고)</label>
+            <select id="farmerGrowthStage" class="form-control" style="font-weight: 700; color: #15803d;">
+              <option value="활착기">🌱 활착기 (정식 초기)</option>
+              <option value="생장기">🌿 생장기 (줄기/엽면 생육)</option>
+              <option value="착과·비대기">🍈 착과·비대기 (열매 비대)</option>
+              <option value="수확임박">⏰ 수확임박 (당도 축적)</option>
+              <option value="수확완료">📦 수확완료</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>정식일 (심은 날) *</label>
+            <input type="date" id="farmerPlantingDate" class="form-control" onchange="onFarmerPlantingDateChange()">
+          </div>
+          <div class="form-group">
+            <label>착과일 (열매 맺힌/수정일) <span id="farmerFruitSetBadge" style="font-size: 0.75rem; color: #2e7d32;"></span></label>
+            <input type="date" id="farmerFruitSetDate" class="form-control" onchange="onFarmerFruitSetDateChange()">
+          </div>
+          <div class="form-group">
+            <label>예상 수확 시작일</label>
+            <input type="date" id="farmerHarvestStart" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>예상 수확 종료일</label>
+            <input type="date" id="farmerHarvestEnd" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>예상 출하 물량</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="number" id="farmerExpectedYield" class="form-control" placeholder="예: 5000">
+              <input type="text" id="farmerYieldUnit" class="form-control" style="width: 70px; text-align: center;" readonly value="kg">
+            </div>
+          </div>
+        </div>
+
+        <div id="farmerSmartCalcBox" class="smart-calc-box">
+          <i class="fa-solid fa-lightbulb" style="color: #f59e0b; margin-right: 6px;"></i>
+          <span id="farmerCalcGuide">생육 주기 안내가 표시됩니다.</span>
+          <div id="farmerAvgNotice" style="margin-top: 6px; font-weight: 700;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 내 정산 및 출하 현황 -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-receipt" style="color: #2563eb;"></i> 내 출하 및 정산 내역</h3>
+        <span style="font-size: 0.8rem; color: var(--text-muted);">관리자 확정 기준</span>
+      </div>
+      <div class="card-body">
+        <div class="settlement-grid">
+          <div class="settle-stat-box">
+            <div class="title">실제 출하 물량</div>
+            <div class="val" id="settleActualYield">0 <small style="font-size: 0.85rem; font-weight: normal;" id="settleActualUnit">kg</small></div>
+            <div style="font-size: 0.76rem; color: #15803d; margin-top: 4px;" id="settleAchievementRate">달성률 0%</div>
+          </div>
+          <div class="settle-stat-box">
+            <div class="title">품질 등급</div>
+            <div class="val" id="settleGrade" style="color: #b45309;">-</div>
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">선별 기준 검수</div>
+          </div>
+          <div class="settle-stat-box">
+            <div class="title">책정 단가</div>
+            <div class="val" id="settleUnitPrice">0원</div>
+            <div style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px;">단위당 단가</div>
+          </div>
+          <div class="settle-stat-box" style="background: #f0fdf4; border-color: #bbf7d0;">
+            <div class="title" style="color: #166534;">최종 예상 정산금액</div>
+            <div class="val" id="settleTotalAmount" style="color: #15803d;">0원</div>
+            <div style="font-size: 0.76rem; color: #166534; margin-top: 4px;">출하물량 × 단가</div>
+          </div>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted);"><i class="fa-solid fa-circle-info"></i> 검수 특이사항: <span id="settleInspectionNotes">-</span></p>
+      </div>
+    </div>
+
+    <!-- 4. 현장 특이사항 및 병해충 실시간 리포트 -->
+    <div class="card">
+      <div class="card-header">
+        <h3><i class="fa-solid fa-triangle-exclamation" style="color: #dc2626;"></i> 현장 특이사항 및 병해충 리포트</h3>
+        <button class="btn btn-primary btn-sm" onclick="submitFarmerIssue()">
+          <i class="fa-solid fa-paper-plane"></i> 관리자에게 전송
+        </button>
+      </div>
+      <div class="card-body">
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-bottom: 8px;">
+          시설 하우스 현장에서 발생한 병해충, 기상 피해, 수정 상태 등을 기재하시면 본사 관리자가 실시간으로 확인하고 조치 지원합니다.
+        </p>
+
+        <div class="quick-tag-bar">
+          <span class="quick-tag" onclick="addFarmerIssueTag('흰가루병 경미 발생(방제 진행 중)')">+ 흰가루병</span>
+          <span class="quick-tag" onclick="addFarmerIssueTag('착과기 수정 불량 발생')">+ 수정 불량</span>
+          <span class="quick-tag" onclick="addFarmerIssueTag('야간 저온으로 생육 지연')">+ 야간 저온</span>
+          <span class="quick-tag" onclick="addFarmerIssueTag('연속 강우로 일조량 부족')">+ 일조량 부족</span>
+          <span class="quick-tag" onclick="addFarmerIssueTag('열과율 3% 미만 양호')">+ 열과 관리</span>
+          <span class="quick-tag" onclick="addFarmerIssueTag('당도 15.5브릭스 이상 확인')">+ 당도 우수</span>
+        </div>
+
+        <textarea id="farmerIssueText" class="form-control" rows="3" placeholder="현장 특이사항 및 조치 상황을 자세히 적어주세요." style="margin-top: 10px;"></textarea>
+
+        <div style="margin-top: 14px;">
+          <h4 style="font-size: 0.82rem; font-weight: 700; color: #4b5563; margin-bottom: 6px;">최근 등록된 현장 메모 이력:</h4>
+          <div id="farmerIssueHistory" style="font-size: 0.82rem; color: #374151; background: #f9fafb; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            등록된 특이사항이 없습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="api-client.js"></script>
+  <script>
+    let currentFarmerData = null;
+    let currentPrediction = null;
+    let currentSettlement = null;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      s2tAuth.renderHeaderProfile("userProfileContainer", "user");
+      await loadFarmerPortalData();
+    });
+
+    async function loadFarmerPortalData() {
+      const session = s2tAuth.getSession("user");
+      if (!session || !session.farmId) return;
+
+      const farms = await s2tDB.getFarms();
+      const predictions = await s2tDB.getPredictions();
+      const settlements = await s2tDB.getSettlements();
+
+      // 1. 내 농가 정보 매칭
+      currentFarmerData = farms.find(f => f.id === session.farmId) || {
+        id: session.farmId,
+        farm_name: session.farmName,
+        crop_type: session.cropType || "하미과멜론",
+        region: "경북 성주군",
+        phone: "010-0000-0000",
+        greenhouse_count: 6,
+        area_pyeong: 1200,
+        contract_status: "계약 완료"
+      };
+
+      // 2. 내 생산 예측 매칭
+      currentPrediction = predictions.find(p => p.farm_id === session.farmId || p.farm_name === currentFarmerData.farm_name) || {
+        id: "PRED-" + session.farmId,
+        contract_id: "CNT-2026-01",
+        farm_id: session.farmId,
+        farm_name: currentFarmerData.farm_name,
+        crop_type: currentFarmerData.crop_type,
+        planting_date: new Date().toISOString().split("T")[0],
+        fruit_set_date: "",
+        expected_harvest_start: "",
+        expected_harvest_end: "",
+        expected_yield: 5000,
+        yield_unit: currentFarmerData.crop_type.includes("수박") ? "통" : "kg",
+        growth_stage: "생장기"
+      };
+
+      // 3. 내 정산 내역 매칭
+      currentSettlement = settlements.find(s => s.contract_id === currentPrediction.contract_id || s.farm_name === currentFarmerData.farm_name);
+
+      renderFarmerHero();
+      renderFarmerPredictionForm();
+      renderFarmerSettlement();
+    }
+
+    function renderFarmerHero() {
+      if (!currentFarmerData) return;
+      document.getElementById("heroFarmName").textContent = currentFarmerData.farm_name;
+      document.getElementById("heroCropType").textContent = currentFarmerData.crop_type;
+      document.getElementById("heroRegion").textContent = currentFarmerData.region || "주소지 미등록";
+      document.getElementById("heroPhone").textContent = currentFarmerData.phone || "-";
+      document.getElementById("heroStatus").textContent = currentFarmerData.contract_status || "계약 완료";
+      document.getElementById("heroHouses").textContent = (currentFarmerData.greenhouse_count || 0) + "동";
+      document.getElementById("heroArea").textContent = (Number(currentFarmerData.area_pyeong) || 0).toLocaleString() + "평";
+
+      // D-Day
+      if (currentPrediction && currentPrediction.expected_harvest_start) {
+        const dday = s2tDB.calculateDDay(currentPrediction.expected_harvest_start);
+        document.getElementById("heroDDay").textContent = dday.text;
+      }
+    }
+
+    function renderFarmerPredictionForm() {
+      if (!currentPrediction) return;
+      document.getElementById("farmerContractId").value = currentPrediction.contract_id || currentPrediction.id;
+      document.getElementById("farmerGrowthStage").value = currentPrediction.growth_stage || "생장기";
+      document.getElementById("farmerPlantingDate").value = currentPrediction.planting_date || "";
+      document.getElementById("farmerFruitSetDate").value = currentPrediction.fruit_set_date || "";
+      document.getElementById("farmerHarvestStart").value = currentPrediction.expected_harvest_start || "";
+      document.getElementById("farmerHarvestEnd").value = currentPrediction.expected_harvest_end || "";
+      document.getElementById("farmerExpectedYield").value = currentPrediction.expected_yield || "";
+      document.getElementById("farmerYieldUnit").value = currentPrediction.yield_unit || "kg";
+
+      // 스마트 안내 박스 텍스트
+      const isWater = (currentFarmerData.crop_type || "").includes("수박");
+      const guideSpan = document.getElementById("farmerCalcGuide");
+      if (isWater) {
+        guideSpan.innerHTML = `<b>🍉 수박 고상재배(반촉성) 주기</b>: 정식 후 착과 <b>35 ~ 40일 (평균 38일)</b> | 수정(착과) 후 수확 <b>45 ~ 50일 (평균 48일)</b>`;
+      } else {
+        guideSpan.innerHTML = `<b>🍈 하미과멜론 주기</b>: 정식 후 착과 <b>30 ~ 35일 (평균 33일)</b> | 착과 후 수확 <b>55 ~ 60일 (평균 58일)</b>`;
+      }
+
+      // 계산 실행
+      if (currentPrediction.fruit_set_date) {
+        const calc = s2tDB.calculateHarvestWindow(currentFarmerData.crop_type, currentPrediction.fruit_set_date, true);
+        renderFarmerHarvestNotice(calc);
+      } else if (currentPrediction.planting_date) {
+        const calc = s2tDB.calculateHarvestWindow(currentFarmerData.crop_type, currentPrediction.planting_date, false);
+        renderFarmerHarvestNotice(calc);
+      }
+    }
+
+    function onFarmerPlantingDateChange() {
+      const pDate = document.getElementById("farmerPlantingDate").value;
+      if (!pDate) return;
+      const crop = currentFarmerData.crop_type;
+      const calc = s2tDB.calculateHarvestWindow(crop, pDate, false);
+      if (calc) {
+        document.getElementById("farmerFruitSetDate").value = calc.suggestedFruitSetDate;
+        document.getElementById("farmerHarvestStart").value = calc.harvestStartDate;
+        document.getElementById("farmerHarvestEnd").value = calc.harvestEndDate;
+        renderFarmerHarvestNotice(calc);
+      }
+    }
+
+    function onFarmerFruitSetDateChange() {
+      const fDate = document.getElementById("farmerFruitSetDate").value;
+      if (!fDate) {
+        onFarmerPlantingDateChange();
+        return;
+      }
+      const crop = currentFarmerData.crop_type;
+      const calc = s2tDB.calculateHarvestWindow(crop, fDate, true);
+      if (calc) {
+        document.getElementById("farmerHarvestStart").value = calc.harvestStartDate;
+        document.getElementById("farmerHarvestEnd").value = calc.harvestEndDate;
+        renderFarmerHarvestNotice(calc);
+      }
+    }
+
+    function renderFarmerHarvestNotice(calc) {
+      if (!calc) return;
+      document.getElementById("farmerFruitSetBadge").textContent = `(정식 후 평균 ${calc.fruitSetDaysAvg}일)`;
+      document.getElementById("farmerAvgNotice").innerHTML = 
+        `🎯 <b>평균 수확 예정일:</b> ${calc.harvestAvgDate} <span style="font-weight:normal; font-size:0.8rem;">(착과 후 약 ${calc.harvestAvgOffset}일경)</span>`;
+    }
+
+    async function saveFarmerPrediction() {
+      const plantingDate = document.getElementById("farmerPlantingDate").value;
+      const fruitSetDate = document.getElementById("farmerFruitSetDate").value;
+      const harvestStart = document.getElementById("farmerHarvestStart").value;
+      const harvestEnd = document.getElementById("farmerHarvestEnd").value;
+      const growthStage = document.getElementById("farmerGrowthStage").value;
+      const expYield = Number(document.getElementById("farmerExpectedYield").value) || 0;
+
+      const predData = {
+        ...currentPrediction,
+        planting_date: plantingDate,
+        fruit_set_date: fruitSetDate,
+        expected_harvest_start: harvestStart,
+        expected_harvest_end: harvestEnd,
+        growth_stage: growthStage,
+        expected_yield: expYield
+      };
+
+      await s2tDB.savePrediction(predData);
+      currentPrediction = predData;
+      showToast("내 생육 및 출하 예측 정보가 관리자 시스템에 정상 반영되었습니다.");
+      renderFarmerHero();
+    }
+
+    function renderFarmerSettlement() {
+      if (!currentSettlement) {
+        document.getElementById("settleActualYield").textContent = "0";
+        document.getElementById("settleAchievementRate").textContent = "출하 대기 중";
+        document.getElementById("settleGrade").textContent = "검수 전";
+        document.getElementById("settleUnitPrice").textContent = "책정 전";
+        document.getElementById("settleTotalAmount").textContent = "정산 대기";
+        document.getElementById("settleInspectionNotes").textContent = "아직 출하 내역이 등록되지 않았습니다.";
+        return;
+      }
+
+      document.getElementById("settleActualYield").textContent = (Number(currentSettlement.actual_yield) || 0).toLocaleString();
+      document.getElementById("settleActualUnit").textContent = currentSettlement.yield_unit || "kg";
+
+      if (currentPrediction && currentPrediction.expected_yield > 0) {
+        const rate = Math.round((currentSettlement.actual_yield / currentPrediction.expected_yield) * 100);
+        document.getElementById("settleAchievementRate").textContent = `달성률 ${rate}%`;
+      }
+
+      document.getElementById("settleGrade").textContent = currentSettlement.quality_grade || "특";
+      document.getElementById("settleUnitPrice").textContent = (Number(currentSettlement.unit_price) || 0).toLocaleString() + "원";
+      document.getElementById("settleTotalAmount").textContent = (Number(currentSettlement.settlement_amount) || 0).toLocaleString() + "원";
+      document.getElementById("settleInspectionNotes").textContent = currentSettlement.issues || "특이사항 없음";
+
+      // 이슈 히스토리 표시
+      if (currentSettlement.issues) {
+        document.getElementById("farmerIssueHistory").textContent = currentSettlement.issues;
+      }
+    }
+
+    function addFarmerIssueTag(tag) {
+      const area = document.getElementById("farmerIssueText");
+      const current = area.value.trim();
+      area.value = current ? current + ", " + tag : tag;
+    }
+
+    async function submitFarmerIssue() {
+      const text = document.getElementById("farmerIssueText").value.trim();
+      if (!text) {
+        alert("전송할 현장 특이사항을 입력해 주세요.");
+        return;
+      }
+
+      const session = s2tAuth.getSession("user");
+      const nowStr = new Date().toISOString().replace("T", " ").substring(0, 16);
+      const newIssueEntry = `[${nowStr} 농가보고] ${text}`;
+
+      // 기존 정산 건이 있으면 업데이트, 없으면 신규 접수 생성
+      let setData = currentSettlement ? { ...currentSettlement } : {
+        contract_id: currentPrediction.contract_id || ("CNT-" + session.farmId),
+        farm_name: currentFarmerData.farm_name,
+        crop_type: currentFarmerData.crop_type,
+        harvest_date: new Date().toISOString().split("T")[0],
+        actual_yield: 0,
+        yield_unit: currentFarmerData.crop_type.includes("수박") ? "통" : "kg",
+        quality_grade: "상",
+        unit_price: 0,
+        settlement_amount: 0,
+        issues: ""
+      };
+
+      setData.issues = setData.issues ? `${setData.issues} | ${newIssueEntry}` : newIssueEntry;
+      await s2tDB.saveSettlement(setData);
+      currentSettlement = setData;
+
+      document.getElementById("farmerIssueText").value = "";
+      document.getElementById("farmerIssueHistory").textContent = setData.issues;
+      showToast("현장 특이사항이 총괄 관리자에게 성공적으로 전송되었습니다.");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("saveToast");
+      document.getElementById("toastMsg").textContent = msg;
+      toast.style.display = "flex";
+      setTimeout(() => {
+        toast.style.display = "none";
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
