@@ -55,18 +55,24 @@
       flex-direction: column;
     }
 
-    /* 상단 네비게이션 헤더 */
+    /* 상단 네비게이션 헤더 (화면 중앙 정렬) */
     header {
       background: #ffffff;
       border-bottom: 1px solid var(--border);
-      padding: 16px 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       position: sticky;
       top: 0;
       z-index: 50;
       box-shadow: var(--shadow-sm);
+    }
+
+    .header-container {
+      max-width: 1380px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .brand {
@@ -111,6 +117,29 @@
       display: flex;
       align-items: center;
       gap: 12px;
+    }
+
+    .btn-header-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 15px;
+      border-radius: 20px;
+      background: #f1f5f9;
+      color: #374151;
+      font-size: 0.84rem;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid #e2e8f0;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+
+    .btn-header-link:hover {
+      background: var(--primary-bg);
+      color: var(--primary-dark);
+      border-color: #bbf7d0;
+      transform: translateY(-1px);
     }
 
     .sync-status-badge {
@@ -686,7 +715,7 @@
 
     /* 반응형 미디어 쿼리 */
     @media (max-width: 768px) {
-      header {
+      .header-container {
         padding: 12px 16px;
       }
       main {
@@ -711,26 +740,29 @@
 </head>
 <body>
 
-  <!-- 상단 네비게이션 헤더 -->
+  <!-- 상단 네비게이션 헤더 (화면 중앙 정렬 Centered Container) -->
   <header>
-    <!-- [요구사항 4] 로고 클릭 시 index.html로 복귀 -->
-    <a href="index.html" class="brand" title="그린씨드 메인 홈으로 이동 (index.html)">
-      <div class="brand-icon">
-        <i class="fa-solid fa-seedling"></i>
-      </div>
-      <div class="brand-title">
-        <h1>S2T 계약재배 및 생산관리</h1>
-        <p>Seed-to-Table 물량 예측 & 품질·정산 통합 시스템</p>
-      </div>
-    </a>
-    <div class="header-actions">
-      <div id="adminProfileContainer"></div>
-      <!-- [요구사항 4] 메인 홈으로 바로가기 버튼 제공 -->
-      <a href="index.html" class="btn btn-outline btn-sm" title="그린씨드 메인 홈으로 이동">
-        <i class="fa-solid fa-house" style="color: var(--primary);"></i> 홈으로 (그린씨드)
+    <div class="header-container">
+      <!-- 로고 클릭 시 index.html로 복귀 -->
+      <a href="index.html" class="brand" title="그린씨드 메인 홈으로 이동 (index.html)">
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="brand-title">
+          <h1>S2T 계약재배 및 생산관리</h1>
+          <p>Seed-to-Table 물량 예측 & 품질·정산 통합 시스템</p>
+        </div>
       </a>
-      <!-- [요구사항 2] 농가 관리자 버튼 삭제 완료 -->
-      <!-- [요구사항 3] 시트연동설정 버튼 삭제 완료 -->
+      <div class="header-actions">
+        <!-- [요구사항 3] 농가 관리자 & 로그인 메뉴를 S2T 생산관리 헤더에 배치 -->
+        <a href="user.html" class="btn-header-link" title="농가 관리자 화면으로 이동">
+          <i class="fa-solid fa-wheat-awn" style="color: var(--primary);"></i> 농가 관리자
+        </a>
+        <a href="login.html" class="btn-header-link" title="로그인 화면으로 이동">
+          <i class="fa-solid fa-key"></i> 로그인
+        </a>
+        <div id="adminProfileContainer"></div>
+      </div>
     </div>
   </header>
 
