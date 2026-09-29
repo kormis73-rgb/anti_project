@@ -713,6 +713,7 @@
 
   <!-- 상단 네비게이션 헤더 -->
   <header>
+    <!-- [요구사항 4] 로고 클릭 시 index.html로 복귀 -->
     <a href="index.html" class="brand" title="그린씨드 메인 홈으로 이동 (index.html)">
       <div class="brand-icon">
         <i class="fa-solid fa-seedling"></i>
@@ -724,9 +725,12 @@
     </a>
     <div class="header-actions">
       <div id="adminProfileContainer"></div>
+      <!-- [요구사항 4] 메인 홈으로 바로가기 버튼 제공 -->
       <a href="index.html" class="btn btn-outline btn-sm" title="그린씨드 메인 홈으로 이동">
         <i class="fa-solid fa-house" style="color: var(--primary);"></i> 홈으로 (그린씨드)
       </a>
+      <!-- [요구사항 2] 농가 관리자 버튼 삭제 완료 -->
+      <!-- [요구사항 3] 시트연동설정 버튼 삭제 완료 -->
     </div>
   </header>
 
@@ -1227,45 +1231,6 @@
       <div class="modal-footer">
         <button class="btn btn-outline" onclick="closeSettlementModal()">취소</button>
         <button class="btn btn-primary" onclick="submitSettlementForm()">정산 저장</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============================================================== -->
-  <!-- 모달 4: 구글 시트 연동 설정 모달                                  -->
-  <!-- ============================================================== -->
-  <div id="configModalBackdrop" class="modal-backdrop">
-    <div class="modal">
-      <div class="modal-header">
-        <h2><i class="fa-brands fa-google-drive" style="color: #2e7d32;"></i> 구글 스프레드시트 연동 설정</h2>
-        <button class="modal-close" onclick="closeConfigModal()"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size: 0.86rem; color: var(--text-muted); line-height: 1.5;">
-          기존 구글 스프레드시트의 <b>Apps Script</b>에 최신 코드를 배포하고 발급받은 <b>웹 앱 URL</b>을 입력하시면, 
-          스프레드시트에 <code>farms</code>, <code>predictions</code>, <code>settlements</code> 시트가 자동으로 구성되어 실시간 양방향 연동됩니다.
-        </p>
-
-        <div class="form-group">
-          <label>Google Apps Script 웹 앱 URL</label>
-          <input type="url" id="configUrlInput" class="form-control" placeholder="https://script.google.com/macros/s/.../exec">
-        </div>
-
-        <div id="configTestResult" style="display: none; padding: 10px 14px; border-radius: 8px; font-size: 0.84rem;"></div>
-
-        <div class="helper-box" style="background: #f8fafc; border-color: #e2e8f0; color: #334155;">
-          <i class="fa-solid fa-circle-info" style="color: #2563eb;"></i>
-          <div>
-            <b>구글 시트 연동 3단계 가이드</b><br>
-            1. 구글 스프레드시트 > <b>[확장 프로그램]</b> > <b>[Apps Script]</b> 열기<br>
-            2. 프로젝트 폴더 내 <code>google-apps-script.js</code> 코드로 교체 후 [저장]<br>
-            3. 우측 상단 <b>[배포] > [배포 관리]</b>에서 [수정] > <b>'새 버전'</b>으로 선택 후 배포한 웹 앱 URL을 복사해 이곳에 입력!
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-outline" onclick="testSheetConnection()"><i class="fa-solid fa-arrows-rotate"></i> 연결 테스트</button>
-        <button class="btn btn-primary" onclick="saveSheetConfig()"><i class="fa-solid fa-check"></i> 설정 저장</button>
       </div>
     </div>
   </div>
